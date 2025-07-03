@@ -1,6 +1,6 @@
 using FastFilmography.Client.Pages;
 using FastFilmography.Components;
-using FastFilmography.Models.DataAccess;
+using FastFilmography.DataAccess;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,7 +9,7 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents();
 
-
+builder.Services.AddSingleton<ITMDBApi, TMDBApi>();
 
 var app = builder.Build();
 
