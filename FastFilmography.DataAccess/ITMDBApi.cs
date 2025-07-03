@@ -2,7 +2,7 @@
 using FastFilmography.Models.MovieModels;
 using RestSharp;
 
-namespace FastFilmography.Models.DataAccess
+namespace FastFilmography.DataAccess
 {
     public interface ITMDBApi
     {

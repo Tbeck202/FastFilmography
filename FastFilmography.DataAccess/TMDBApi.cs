@@ -3,8 +3,14 @@ using FastFilmography.Models.MovieModels;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using RestSharp;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Numerics;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace FastFilmography.Models.DataAccess
+namespace FastFilmography.DataAccess
 {
     public class TMDBApi : ITMDBApi
     {
@@ -64,6 +70,21 @@ namespace FastFilmography.Models.DataAccess
             catch (Exception ex) { }
 
             return movie;
+        }
+
+        Task<Actor> ITMDBApi.GetActorByIdAsync(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<Movie> ITMDBApi.GetMovieById(int id, bool getCredits)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<RestResponse> ITMDBApi.SendRequestAsync(string url)
+        {
+            throw new NotImplementedException();
         }
     }
 }
