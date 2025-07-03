@@ -361,3 +361,6 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/FastFilmography.sln
+/FastFilmography/appsettings.json
+/FastFilmography/appsettings.Development.json
