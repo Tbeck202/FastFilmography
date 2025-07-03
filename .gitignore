@@ -365,3 +365,4 @@ FodyWeavers.xsd
 /FastFilmography/appsettings.json
 /FastFilmography/appsettings.Development.json
 /FastFilmography.Client/wwwroot/appsettings.json
+/FastFilmography.DataAccess/appsettings.json
