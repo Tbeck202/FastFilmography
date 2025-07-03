@@ -9,7 +9,7 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents();
 
-builder.Services.AddSingleton<TMDBApi>();
+builder.Services.AddSingleton<ITMDBApi, TMDBApi>();
 
 var app = builder.Build();
 

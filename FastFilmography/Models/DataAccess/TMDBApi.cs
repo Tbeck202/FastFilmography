@@ -6,7 +6,7 @@ using RestSharp;
 
 namespace FastFilmography.Models.DataAccess
 {
-    public class TMDBApi
+    public class TMDBApi : ITMDBApi
     {
         private readonly IConfiguration _configuration;
         public string Token { get; set; }
