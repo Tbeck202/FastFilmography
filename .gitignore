@@ -366,3 +366,4 @@ FodyWeavers.xsd
 /FastFilmography/appsettings.Development.json
 /FastFilmography.Client/wwwroot/appsettings.json
 /FastFilmography.DataAccess/appsettings.json
+/FastFilmography.Client/wwwroot/appsettings.Development.json
