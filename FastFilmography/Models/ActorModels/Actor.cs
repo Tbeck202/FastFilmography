@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace FastFilmography.Models
+namespace FastFilmography.Models.ActorModels
 {
     public class Actor
     {
