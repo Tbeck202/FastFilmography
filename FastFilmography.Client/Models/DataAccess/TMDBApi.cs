@@ -68,6 +68,19 @@ namespace FastFilmography.Client.Models.DataAccess
             return actor;
         }
 
+        public async Task<CastAndCrewCredits> GetCastAndCrewCreditsAsync(int id)
+        {
+            CastAndCrewCredits castAndCrewCredits = new();
+            try
+            {
+                string url = $"https://api.themoviedb.org/3/person/{id.ToString()}/movie_credits?language=en-US";
+                var response = await SendRequestAsync(url);
+                castAndCrewCredits = JsonConvert.DeserializeObject<CastAndCrewCredits>(response.Content);
+            }
+            catch (Exception ex) { }
+            return castAndCrewCredits;
+        }
+
         public async Task<Movie> GetMovieById(int id, bool getCredits)
         {
             Movie movie = new();

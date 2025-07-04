@@ -1,0 +1,19 @@
+﻿<h3>MovieContainer</h3>
+
+@code {
+    [Parameter]
+    public Actor Actor { get; set; }
+
+    private List<Movie> movies = new List<Movie>();
+
+    private async void LoadMovies()
+    {
+        // Simulate loading movies for the actor
+        movies = new List<Movie>
+        {
+            new Movie { Title = "Movie 1", ReleaseDate = "2023-01-01" },
+            new Movie { Title = "Movie 2", ReleaseDate = "2023-02-01" },
+            new Movie { Title = "Movie 3", ReleaseDate = "2023-03-01" }
+        };
+    }
+}

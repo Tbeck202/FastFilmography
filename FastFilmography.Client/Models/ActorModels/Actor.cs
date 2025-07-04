@@ -45,5 +45,7 @@ namespace FastFilmography.Client.Models.ActorModels
 
         [JsonProperty("profile_path")]
         public string ProfilePath { get; set; }
+
+        public CastAndCrewCredits CastAndCrewCredits { get; set; }
     }
 }

@@ -78,6 +78,7 @@ else
         actor = new Actor();
         
         actor = await Tmdbapi.GetActorByIdAsync(PickPopularActor());
+        actor.CastAndCrewCredits = await Tmdbapi.GetCastAndCrewCreditsAsync(actor.Id);
 
         actorLoaded = string.IsNullOrEmpty(actor.Name) ? false : true;
         if (actorLoaded)

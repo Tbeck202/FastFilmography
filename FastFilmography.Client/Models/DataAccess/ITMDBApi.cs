@@ -9,6 +9,7 @@ namespace FastFilmography.Client.Models.DataAccess
         string Token { get; set; }
 
         Task<Actor> GetActorByIdAsync(int id);
+        Task<CastAndCrewCredits> GetCastAndCrewCreditsAsync(int id);
         Task<Movie> GetMovieById(int id, bool getCredits);
         Task<TMDBConfiguration> GetConfigurationAsync();
         Task<RestResponse> SendRequestAsync(string url);
