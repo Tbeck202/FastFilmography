@@ -22,7 +22,7 @@
 
     private async void ReloadActor()
     {
-        Actor = null; // Reset the actor to trigger a reload
+        Actor = null; // Reset the actor
         await Reload.InvokeAsync(); // Invoke the callback to reload the actor
         StateHasChanged(); // Refresh the component
     }

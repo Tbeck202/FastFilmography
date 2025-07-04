@@ -1,11 +1,11 @@
-﻿@* @rendermode @(new InteractiveServerRenderMode(prerender: false))
-@page "/play" *@
+﻿
+@using Newtonsoft.Json
 @rendermode InteractiveAuto
 @inject ITMDBApi Tmdbapi
 
 @if (configurationLoaded)
 {
-    if (!actorLoaded) 
+    if (!actorLoaded && !reloadActor) 
     {
         <button class="btn btn-primary" @onclick="LoadActor">Load Actor</button>
     }
@@ -18,37 +18,66 @@ else
 
 @if (actorLoaded)
 {
-    <ActorDisplay Actor="actor" Reload="@LoadActor"/>
+    <ActorDisplay Actor="actor" Reload="@ReloadActor" />
 }
 @if (isLoading)
 {
     <p>Loading...</p>
 }
 
-
-
-
 @code {
+    [Parameter]
+    public EventCallback<bool> SetGameInProgress { get; set; }
+
     private TMDBConfiguration? tmdbConfiguration;
     private Actor? actor;
     private bool configurationLoaded = false;
     private bool isLoading = false;
     private bool actorLoaded = false;
+    private bool reloadActor = false;
     private string imagePath = "https://image.tmdb.org/t/p/w300/";
+    private List<PopularActor> popularActors = new List<PopularActor>();
+    private List<PopularActor> poplarActorsUsed = new List<PopularActor>();
 
     protected override async Task OnInitializedAsync()
     {
+        LoadPopularActors();
         tmdbConfiguration = await Tmdbapi.GetConfigurationAsync();
         imagePath = tmdbConfiguration?.Images?.BaseUrl + tmdbConfiguration?.Images?.PosterSizes?.Find(posterSize => posterSize == "w185") ?? "https://image.tmdb.org/t/p/w300/";
         configurationLoaded = true;
     }
-    
+
+    private async void LoadPopularActors()
+    {
+        using (StreamReader stream = File.OpenText("C:\\Projects\\FastFilmography\\FastFilmography.Client\\PopularActorFilter.json"))
+        {
+            string json = stream.ReadToEnd();
+            popularActors = JsonConvert.DeserializeObject<List<PopularActor>>(json);
+        }
+    }
+
+    private int PickPopularActor()
+    {
+        int randomIndex = new Random().Next(0, popularActors.Count);
+        PopularActor? popularActor = popularActors[randomIndex];
+        while (poplarActorsUsed.Any(a => a.Id == popularActor!.Id))
+        {
+            randomIndex = new Random().Next(0, popularActors.Count);
+            popularActor = popularActors[randomIndex];
+        }
+        poplarActorsUsed.Add(popularActor!);
+
+        return popularActor!.Id;
+    }
+
     protected async void LoadActor()
     {
+        await SetGameInProgress.InvokeAsync(true);
         isLoading = true;
         actorLoaded = false;
         actor = new Actor();
-        actor = await Tmdbapi.GetActorByIdAsync(1229);
+        
+        actor = await Tmdbapi.GetActorByIdAsync(PickPopularActor());
 
         actorLoaded = string.IsNullOrEmpty(actor.Name) ? false : true;
         if (actorLoaded)
@@ -61,6 +90,13 @@ else
             actor.ProfilePath = "https://via.placeholder.com/150";
         }
         isLoading = actorLoaded ? false : true;
+        reloadActor = false;
         StateHasChanged();
+    }
+
+    private void ReloadActor()
+    {
+        reloadActor = true;
+        LoadActor();
     }
 }
