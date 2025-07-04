@@ -39,6 +39,19 @@ namespace FastFilmography.Client.Models.DataAccess
             }
         }
 
+        public async Task<TMDBConfiguration> GetConfigurationAsync()
+        {
+            TMDBConfiguration configuration = new();
+            try
+            {
+                string url = "https://api.themoviedb.org/3/configuration?language=en-US";
+                var response = await SendRequestAsync(url);
+                configuration = JsonConvert.DeserializeObject<TMDBConfiguration>(response.Content);
+            }
+            catch (Exception ex) { }
+            return configuration;
+        }
+
         public async Task<Actor> GetActorByIdAsync(int id)
         {
             Actor actor = new();
@@ -69,21 +82,6 @@ namespace FastFilmography.Client.Models.DataAccess
             catch (Exception ex) { }
 
             return movie;
-        }
-
-        Task<Actor> ITMDBApi.GetActorByIdAsync(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        Task<Movie> ITMDBApi.GetMovieById(int id, bool getCredits)
-        {
-            throw new NotImplementedException();
-        }
-
-        Task<RestResponse> ITMDBApi.SendRequestAsync(string url)
-        {
-            throw new NotImplementedException();
         }
     }
 }

@@ -1,28 +1,64 @@
 ﻿@* @rendermode @(new InteractiveServerRenderMode(prerender: false))
 @page "/play" *@
 @rendermode InteractiveAuto
-@inject TMDBApi Tmdbapi
+@inject ITMDBApi Tmdbapi
 
-<h3>Play!</h3>
-
-<h4>Actor Details</h4>
-<button class="btn btn-primary" @onclick="LoadActor">Load Actor</button>
-@if (actor == null)
+@if (configurationLoaded)
 {
-    <p>Loading...</p>
+    <button class="btn btn-primary" @onclick="LoadActor">Load Actor</button>
 }
 else
 {
-    <p>@actor.Name</p>
-    <img src="@actor.ProfilePath" alt="@actor.Name" />
+    <button disabled class="btn btn-primary" @onclick="LoadActor">Load Actor</button>
 }
 
 
+@if (actorLoaded)
+{
+    <h4>Actor Details</h4>
+    <p>@actor.Name</p>
+    <img maxwidth="200" src="@actor.ProfilePath" alt="@actor.Name" />
+}
+@if (isLoading)
+{
+    <p>Loading...</p>
+}
+
+
+
+
 @code {
-    Actor? actor = null;
+    private TMDBConfiguration? tmdbConfiguration;
+    private Actor? actor;
+    private bool configurationLoaded = false;
+    private bool isLoading = false;
+    private bool actorLoaded = false;
+    private string imagePath = "https://image.tmdb.org/t/p/w300/";
+
+    protected override async Task OnInitializedAsync()
+    {
+        tmdbConfiguration = await Tmdbapi.GetConfigurationAsync();
+        imagePath = tmdbConfiguration?.Images?.BaseUrl + tmdbConfiguration?.Images?.PosterSizes?.Find(posterSize => posterSize == "w185") ?? "https://image.tmdb.org/t/p/w300/";
+        configurationLoaded = true;
+    }
     
     protected async void LoadActor()
     {
-        actor = await Tmdbapi.GetActorByIdAsync(115);
+        isLoading = true;
+        actor = new Actor();
+        actor = await Tmdbapi.GetActorByIdAsync(1229);
+
+        actorLoaded = string.IsNullOrEmpty(actor.Name) ? false : true;
+        if (actorLoaded)
+        {
+            actor.ProfilePath = $"{imagePath}{actor.ProfilePath}";
+        }
+        else
+        {
+            actor.Name = "Actor not found";
+            actor.ProfilePath = "https://via.placeholder.com/150";
+        }
+        isLoading = actorLoaded ? false : true;
+        StateHasChanged();
     }
 }
