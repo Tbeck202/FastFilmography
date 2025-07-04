@@ -5,7 +5,10 @@
 
 @if (configurationLoaded)
 {
-    <button class="btn btn-primary" @onclick="LoadActor">Load Actor</button>
+    if (!actorLoaded) 
+    {
+        <button class="btn btn-primary" @onclick="LoadActor">Load Actor</button>
+    }
 }
 else
 {
@@ -15,9 +18,7 @@ else
 
 @if (actorLoaded)
 {
-    <h4>Actor Details</h4>
-    <p>@actor.Name</p>
-    <img maxwidth="200" src="@actor.ProfilePath" alt="@actor.Name" />
+    <ActorDisplay Actor="actor" Reload="@LoadActor"/>
 }
 @if (isLoading)
 {
@@ -45,6 +46,7 @@ else
     protected async void LoadActor()
     {
         isLoading = true;
+        actorLoaded = false;
         actor = new Actor();
         actor = await Tmdbapi.GetActorByIdAsync(1229);
 

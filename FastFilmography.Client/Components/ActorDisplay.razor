@@ -1,0 +1,29 @@
+﻿
+
+<div class="card" style="width: 12rem;">
+    <img src="@Actor.ProfilePath" class="card-img-top" alt="...">
+    <div class="card-body">
+        <h5 class="card-title">@Actor.Name</h5>
+        <a href="#" class="btn btn-primary" @onclick="ReloadActor">@buttonText</a>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public Actor? Actor { get; set; }
+
+    [Parameter]
+    public string? ImagePath { get; set; }
+
+    [Parameter]
+    public EventCallback Reload { get; set; }
+
+    private string buttonText = "I don't know this Actor...";
+
+    private async void ReloadActor()
+    {
+        Actor = null; // Reset the actor to trigger a reload
+        await Reload.InvokeAsync(); // Invoke the callback to reload the actor
+        StateHasChanged(); // Refresh the component
+    }
+}
