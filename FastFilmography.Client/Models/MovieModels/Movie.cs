@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace FastFilmography.Models.MovieModels
+namespace FastFilmography.Client.Models.MovieModels
 {
     public class Movie
     {
@@ -16,8 +16,8 @@ namespace FastFilmography.Models.MovieModels
         [JsonProperty("budget")]
         public int Budget { get; set; }
 
-        //[JsonProperty("genres")]
-        //public List<Genre> Genres { get; set; }
+        [JsonProperty("genres")]
+        public List<Genre> Genres { get; set; }
 
         [JsonProperty("homepage")]
         public string Homepage { get; set; }
@@ -46,11 +46,11 @@ namespace FastFilmography.Models.MovieModels
         [JsonProperty("poster_path")]
         public string PosterPath { get; set; }
 
-        //[JsonProperty("production_companies")]
-        //public List<ProductionCompany> ProductionCompanies { get; set; }
+        [JsonProperty("production_companies")]
+        public List<ProductionCompany> ProductionCompanies { get; set; }
 
-        //[JsonProperty("production_countries")]
-        //public List<ProductionCountry> ProductionCountries { get; set; }
+        [JsonProperty("production_countries")]
+        public List<ProductionCountry> ProductionCountries { get; set; }
 
         [JsonProperty("release_date")]
         public string ReleaseDate { get; set; }
@@ -61,8 +61,8 @@ namespace FastFilmography.Models.MovieModels
         [JsonProperty("runtime")]
         public int Runtime { get; set; }
 
-        //[JsonProperty("spoken_languages")]
-        //public List<SpokenLanguage> SpokenLanguages { get; set; }
+        [JsonProperty("spoken_languages")]
+        public List<SpokenLanguage> SpokenLanguages { get; set; }
 
         [JsonProperty("status")]
         public string Status { get; set; }

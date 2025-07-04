@@ -1,6 +1,6 @@
 using FastFilmography.Client.Pages;
 using FastFilmography.Components;
-using FastFilmography.DataAccess;
+using FastFilmography.Client.Models.DataAccess;
 
 var builder = WebApplication.CreateBuilder(args);
 

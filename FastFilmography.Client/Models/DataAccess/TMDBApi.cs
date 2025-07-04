@@ -1,5 +1,5 @@
-﻿using FastFilmography.Models.ActorModels;
-using FastFilmography.Models.MovieModels;
+﻿using FastFilmography.Client.Models.ActorModels;
+using FastFilmography.Client.Models.MovieModels;
 using Newtonsoft.Json;
 using RestSharp;
 using System;
@@ -9,13 +9,13 @@ using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FastFilmography.DataAccess
+namespace FastFilmography.Client.Models.DataAccess
 {
     public class TMDBApi : ITMDBApi
     {
         private readonly IConfiguration _configuration;
         public string Token { get; set; }
-        public TMDBApi(string token, IConfiguration configuration)
+        public TMDBApi(IConfiguration configuration)
         {
             _configuration = configuration;
             Token = _configuration["Token"]!;

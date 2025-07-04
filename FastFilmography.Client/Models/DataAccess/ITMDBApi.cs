@@ -1,8 +1,8 @@
-﻿using FastFilmography.Models.ActorModels;
-using FastFilmography.Models.MovieModels;
+﻿using FastFilmography.Client.Models.ActorModels;
+using FastFilmography.Client.Models.MovieModels;
 using RestSharp;
 
-namespace FastFilmography.DataAccess
+namespace FastFilmography.Client.Models.DataAccess
 {
     public interface ITMDBApi
     {
