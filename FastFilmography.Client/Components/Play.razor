@@ -1,9 +1,9 @@
 ﻿
 @using Newtonsoft.Json
-@rendermode InteractiveAuto
+@rendermode @(new InteractiveAutoRenderMode(prerender: false))
 @inject ITMDBApi Tmdbapi
 
-@if (configurationLoaded)
+@if (configurationLoaded && enableLoadButton)
 {
     if (!actorLoaded && !reloadActor) 
     {
@@ -32,6 +32,7 @@ else
     private TMDBConfiguration? tmdbConfiguration;
     private Actor? actor;
     private bool configurationLoaded = false;
+    private bool enableLoadButton = false;
     private bool isLoading = false;
     private bool actorLoaded = false;
     private bool reloadActor = false;
@@ -47,12 +48,13 @@ else
         configurationLoaded = true;
     }
 
-    private async void LoadPopularActors()
+    private void LoadPopularActors()
     {
-        using (StreamReader stream = File.OpenText("C:\\Projects\\FastFilmography\\FastFilmography.Client\\PopularActorFilter.json"))
+        using (StreamReader stream = File.OpenText("wwwroot\\PopularActorFilter.json"))
         {
             string json = stream.ReadToEnd();
             popularActors = JsonConvert.DeserializeObject<List<PopularActor>>(json);
+            enableLoadButton = popularActors!= null && popularActors.Count > 0;
         }
     }
 
