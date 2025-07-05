@@ -15,10 +15,12 @@ namespace FastFilmography.Client.Models.DataAccess
     {
         private readonly IConfiguration _configuration;
         public string Token { get; set; }
+        public string PopularActorsPath { get; set; }
         public TMDBApi(IConfiguration configuration)
         {
             _configuration = configuration;
             Token = _configuration["Token"]!;
+            PopularActorsPath = _configuration["PopularActorsPath"]!;
         }
         public async Task<RestResponse> SendRequestAsync(string url)
         {

@@ -7,7 +7,7 @@ namespace FastFilmography.Client.Models.DataAccess
     public interface ITMDBApi
     {
         string Token { get; set; }
-
+        string PopularActorsPath { get; set; }
         Task<Actor> GetActorByIdAsync(int id);
         Task<CastAndCrewCredits> GetCastAndCrewCreditsAsync(int id);
         Task<Movie> GetMovieById(int id, bool getCredits);

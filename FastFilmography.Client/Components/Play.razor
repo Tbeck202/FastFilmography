@@ -50,7 +50,7 @@ else
 
     private void LoadPopularActors()
     {
-        using (StreamReader stream = File.OpenText("wwwroot\\PopularActorFilter.json"))
+        using (StreamReader stream = File.OpenText(Tmdbapi.PopularActorsPath))
         {
             string json = stream.ReadToEnd();
             popularActors = JsonConvert.DeserializeObject<List<PopularActor>>(json);
