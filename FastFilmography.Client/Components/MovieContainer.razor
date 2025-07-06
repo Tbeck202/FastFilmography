@@ -1,23 +1,30 @@
 ﻿@inject ITMDBApi Tmdbapi
 @rendermode @(new InteractiveAutoRenderMode(prerender: false))
 
+
 <section class="container-fluid" width="400px">
     <div class="row">
         @foreach (Movie movie in _movies)
         {
-            <MovieDisplay Movie="movie" />
+            <MovieDisplay DisplayMovie="@_displayMovies" Movie="movie" />
         }
     </div>
 </section>
+
+
 
 
 @code {
     [Parameter]
     public Actor Actor { get; set; }
 
+    [Parameter]
+    public bool DisplayMovies { get; set; }
+
     private TMDBConfiguration? _tmdbConfiguration;
     private string _imagePath = "https://image.tmdb.org/t/p/w300/";
     private List<Movie> _movies = new List<Movie>();
+    private bool _displayMovies = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -28,6 +35,11 @@
             _movies = await LoadMovies();
             StateHasChanged();
         }
+    }
+
+    protected override void OnParametersSet()
+    {
+        _displayMovies = DisplayMovies;
     }
 
     private async Task<List<Movie>> LoadMovies()

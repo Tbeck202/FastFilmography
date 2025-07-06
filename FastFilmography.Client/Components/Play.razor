@@ -24,11 +24,14 @@ else
                 <ActorDisplay Actor="actor" Reload="@ReloadActor" />
             </div>
             <div class="col" style="justify-content:center;">
-                <MovieContainer Actor="actor" />
+                <Timer DisplayMovies="@DisplayMovies" Type="Timer.TimerType.PreGame" />
+
+                <MovieContainer DisplayMovies="@displayMovies" Actor="actor" />
+              
             </div>
         </div>
     </section>
-    
+
 }
 @if (isLoading)
 {
@@ -46,6 +49,7 @@ else
     private bool isLoading = false;
     private bool actorLoaded = false;
     private bool reloadActor = false;
+    private bool displayMovies = false;
     private string imagePath = "https://image.tmdb.org/t/p/w300/";
     private List<PopularActor> popularActors = new List<PopularActor>();
     private List<PopularActor> poplarActorsUsed = new List<PopularActor>();
@@ -87,6 +91,7 @@ else
         await SetGameInProgress.InvokeAsync(true);
         isLoading = true;
         actorLoaded = false;
+        displayMovies = false;
         actor = new Actor();
         
         actor = await Tmdbapi.GetActorByIdAsync(PickPopularActor());
@@ -111,5 +116,11 @@ else
     {
         reloadActor = true;
         LoadActor();
+    }
+
+    private void DisplayMovies(bool display)
+    {
+        displayMovies = display;
+        StateHasChanged();
     }
 }
