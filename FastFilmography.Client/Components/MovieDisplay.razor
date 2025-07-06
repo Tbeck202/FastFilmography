@@ -1,5 +1,27 @@
-﻿<h3>MovieDisplay</h3>
+﻿@inject ITMDBApi Tmdbapi
+@rendermode InteractiveAuto
+
+@if(Movie != null)
+{
+    <div class="card" style="width: 12rem;">
+        <img src="@Movie.PosterPath" class="card-img-top" alt="...">
+        <div class="card-body">
+            <h6 class="card-title">@Movie.Title</h6>
+            <a href="#" class="btn btn-primary">Select</a>
+        </div>
+    </div>
+}
+
 
 @code {
+    [Parameter]
+    public Movie Movie { get; set; }
 
+    private string _imagePath = "";
+    
+
+    protected async override void OnInitialized()
+    {
+        
+    }
 }
