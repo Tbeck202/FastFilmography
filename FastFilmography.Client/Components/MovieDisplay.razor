@@ -3,7 +3,7 @@
 
 @if(Movie != null)
 {
-    <div class="card" style="width: 12rem;">
+    <div class="card" style="width: 10rem; margin: 5px;">
         <img src="@Movie.PosterPath" class="card-img-top" alt="...">
         <div class="card-body">
             <h6 class="card-title">@Movie.Title</h6>
@@ -16,12 +16,4 @@
 @code {
     [Parameter]
     public Movie Movie { get; set; }
-
-    private string _imagePath = "";
-    
-
-    protected async override void OnInitialized()
-    {
-        
-    }
 }

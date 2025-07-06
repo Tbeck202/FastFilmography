@@ -20,8 +20,12 @@ else
 {
     <section class="container-fluid">
         <div class="row">
-            <ActorDisplay Actor="actor" Reload="@ReloadActor" />
-            <MovieContainer Actor="actor"/>
+            <div class="col" style="max-width: 200px;">
+                <ActorDisplay Actor="actor" Reload="@ReloadActor" />
+            </div>
+            <div class="col" style="justify-content:center;">
+                <MovieContainer Actor="actor" />
+            </div>
         </div>
     </section>
     
