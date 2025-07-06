@@ -1,0 +1,51 @@
+﻿<h3>@TimerDisplay</h3>
+@rendermode InteractiveAuto
+
+@code {
+    [Parameter]
+    public TimerType Type { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> DisplayMovies { get; set; }
+
+    private string TimerDisplay = "";
+
+    public enum TimerType
+    {
+        PreGame,
+        InGame
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await RunTimer();
+    }
+    // protected override void OnParametersSet()
+    // {
+    //     RunTimer();
+    // }
+
+    private async Task RunTimer() 
+    {
+        if (Type == TimerType.PreGame)
+        {
+            // Logic for Pre-Game Timer
+            TimerDisplay = "Lights...";
+            StateHasChanged();
+            await Task.Delay(2000);
+            
+            TimerDisplay = "Camera...";
+            StateHasChanged();
+            await Task.Delay(2000);
+            
+            TimerDisplay = "Action!";
+            StateHasChanged();
+
+            await DisplayMovies.InvokeAsync(true);
+        }
+        else if (Type == TimerType.InGame)
+        {
+            // Logic for In-Game Timer
+        }
+    }
+}

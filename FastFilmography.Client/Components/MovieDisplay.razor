@@ -3,17 +3,23 @@
 
 @if(Movie != null)
 {
-    <div class="card" style="width: 10rem; margin: 5px;">
-        <img src="@Movie.PosterPath" class="card-img-top" alt="...">
-        <div class="card-body">
-            <h6 class="card-title">@Movie.Title</h6>
-            <a href="#" class="btn btn-primary">Select</a>
+    @if (DisplayMovie)
+    {
+        <div class="card" style="width: 10rem; margin: 5px;">
+            <img src="@Movie.PosterPath" class="card-img-top" alt="...">
+            <div class="card-body">
+                <h6 class="card-title">@Movie.Title</h6>
+                <a href="#" class="btn btn-primary">Select</a>
+            </div>
         </div>
-    </div>
+    }
 }
 
 
 @code {
     [Parameter]
     public Movie Movie { get; set; }
+
+    [Parameter]
+    public bool DisplayMovie { get; set; }
 }
