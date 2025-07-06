@@ -25,6 +25,8 @@
     private string _imagePath = "https://image.tmdb.org/t/p/w300/";
     private List<Movie> _movies = new List<Movie>();
     private bool _displayMovies = false;
+    private bool _keySelected = false;  
+    private Movie _answerKey = new Movie();
 
     protected override async Task OnInitializedAsync()
     {
@@ -45,10 +47,11 @@
     private async Task<List<Movie>> LoadMovies()
     {
         List<Movie> movies = new();
+        TopRatedMovieDataSet possibleKeys = new();
         List<int> idsUsed = new();
         int randomIndex = 0;
 
-        while(movies.Count < 6)
+        while(movies.Count < 5)
         {
             randomIndex = new Random().Next(0, Actor.CastAndCrewCredits.CastCredits.Count);
             Movie movie = await Tmdbapi.GetMovieById(Actor.CastAndCrewCredits.CastCredits[randomIndex].Id, false);
@@ -62,8 +65,27 @@
                 movies.Add(movie);
             }
         }
-        
-        
+
+        randomIndex = new Random().Next(1, 25);
+        possibleKeys = await Tmdbapi.GetMoviesForKeyAsync(randomIndex);
+
+        while(!_keySelected)
+        {
+            randomIndex = new Random().Next(0, possibleKeys.Movies.Count);
+
+            Movie possibleKey = possibleKeys.Movies[randomIndex];
+            possibleKey.Credits = await Tmdbapi.GetCastAndCrewForMovieAsync(possibleKey.Id);
+
+            bool actorInPossibleKey = possibleKey.Credits.Cast.Any(c => c.Id == Actor.Id);
+            if (actorInPossibleKey == false)
+            {
+                _answerKey = possibleKey;
+                _answerKey.PosterPath = _imagePath + _answerKey.PosterPath;
+                _keySelected = true;
+                movies.Add(_answerKey);
+            }
+        }
+        movies = movies.OrderBy(m => m.Title).ToList();
         return movies;
     }
 }
