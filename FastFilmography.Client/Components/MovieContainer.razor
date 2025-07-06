@@ -1,19 +1,57 @@
-﻿<h3>MovieContainer</h3>
+﻿@inject ITMDBApi Tmdbapi
+@rendermode @(new InteractiveAutoRenderMode(prerender: false))
+
+<section class="container-fluid" width="400px">
+    <div class="row">
+        @foreach (Movie movie in _movies)
+        {
+            <MovieDisplay Movie="movie" />
+        }
+    </div>
+</section>
+
 
 @code {
     [Parameter]
     public Actor Actor { get; set; }
 
-    private List<Movie> movies = new List<Movie>();
+    private TMDBConfiguration? _tmdbConfiguration;
+    private string _imagePath = "https://image.tmdb.org/t/p/w300/";
+    private List<Movie> _movies = new List<Movie>();
 
-    private async void LoadMovies()
+    protected override async Task OnInitializedAsync()
     {
-        // Simulate loading movies for the actor
-        movies = new List<Movie>
+        _tmdbConfiguration = await Tmdbapi.GetConfigurationAsync();
+        _imagePath = _tmdbConfiguration?.Images?.BaseUrl + _tmdbConfiguration?.Images?.PosterSizes?.Find(posterSize => posterSize == "w185") ?? "https://image.tmdb.org/t/p/w300/";
+        if (Actor != null)
         {
-            new Movie { Title = "Movie 1", ReleaseDate = "2023-01-01" },
-            new Movie { Title = "Movie 2", ReleaseDate = "2023-02-01" },
-            new Movie { Title = "Movie 3", ReleaseDate = "2023-03-01" }
-        };
+            _movies = await LoadMovies();
+            StateHasChanged();
+        }
+    }
+
+    private async Task<List<Movie>> LoadMovies()
+    {
+        List<Movie> movies = new();
+        List<int> idsUsed = new();
+        int randomIndex = 0;
+
+        while(movies.Count < 6)
+        {
+            randomIndex = new Random().Next(0, Actor.CastAndCrewCredits.CastCredits.Count);
+            Movie movie = await Tmdbapi.GetMovieById(Actor.CastAndCrewCredits.CastCredits[randomIndex].Id, false);
+            if (movie != null
+                && !string.IsNullOrEmpty(movie.Title)
+                && !string.IsNullOrEmpty(movie.Overview)
+                && !idsUsed.Contains(movie.Id))
+            {
+                idsUsed.Add(movie.Id);
+                movie.PosterPath = _imagePath + movie.PosterPath;
+                movies.Add(movie);
+            }
+        }
+        
+        
+        return movies;
     }
 }

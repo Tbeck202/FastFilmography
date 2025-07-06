@@ -18,7 +18,13 @@ else
 
 @if (actorLoaded)
 {
-    <ActorDisplay Actor="actor" Reload="@ReloadActor" />
+    <section class="container-fluid">
+        <div class="row">
+            <ActorDisplay Actor="actor" Reload="@ReloadActor" />
+            <MovieContainer Actor="actor"/>
+        </div>
+    </section>
+    
 }
 @if (isLoading)
 {
