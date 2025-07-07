@@ -25,7 +25,7 @@ else
                 <span class="h3">@selectionText</span>
             </div>
             <div class="col" style="justify-content:center;">
-                <Timer DisplayMovies="@DisplayMovies" Type="Timer.TimerType.PreGame" />
+                <GameTimer DisplayMovies="@DisplayMovies" Type="GameTimer.TimerType.PreGame" />
 
                 <MovieContainer UpdateSelectionDisplayText="UpdateSelectionText" DisplayMovies="@displayMovies" Actor="actor" />
 
@@ -120,10 +120,11 @@ else
         LoadActor();
     }
 
-    private void DisplayMovies(bool display)
+    private async void DisplayMovies(bool display)
     {
         displayMovies = display;
-        StateHasChanged();
+        //StateHasChanged();
+        await InvokeAsync(StateHasChanged);
     }
 
     private async Task UpdateSelectionText(string text){

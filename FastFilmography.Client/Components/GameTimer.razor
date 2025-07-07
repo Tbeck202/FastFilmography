@@ -1,0 +1,84 @@
+﻿@rendermode InteractiveAuto
+
+<h3>@TimerDisplay</h3>
+
+@code {
+    [Parameter]
+    public TimerType Type { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> DisplayMovies { get; set; }
+
+    private System.Timers.Timer _timer;
+
+    private int _timerCount; 
+
+    private string TimerDisplay = "";
+
+    public enum TimerType
+    {
+        PreGame,
+        InGame
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        _timerCount = Type == TimerType.PreGame ? 3 : 10; // Set initial count for Pre-Game timer
+        await RunTimer();
+    }
+    // protected override void OnParametersSet()
+    // {
+    //     RunTimer();
+    // }
+
+    private async Task RunTimer() 
+    {
+        if (Type == TimerType.PreGame)
+        {
+            _timer = new System.Timers.Timer(1500);
+            _timer.Elapsed += CountDownTimer;
+            // Logic for Pre-Game Timer
+            _timer.Enabled = true;
+        }
+        else if (Type == TimerType.InGame)
+        {
+            // Logic for In-Game Timer
+        }
+    }
+
+    private async void CountDownTimer(Object source, System.Timers.ElapsedEventArgs e)
+    {
+        if (_timerCount > 0)
+        {
+
+            switch (_timerCount)
+            {
+                case 3:
+                    TimerDisplay = "Lights...";
+                    await InvokeAsync(StateHasChanged);
+                    break;
+                case 2:
+                    TimerDisplay = "Camera...";
+                    await InvokeAsync(StateHasChanged);
+                    break;
+                case 1:
+                    TimerDisplay = "Action!";
+                    await InvokeAsync(() =>
+                    {
+                        DisplayMovies.InvokeAsync(true);
+                        StateHasChanged();
+                    });
+                    break;
+            }
+
+            _timerCount -= 1;
+        }
+        else
+        {
+            _timer.Enabled = false;
+            _timer.Dispose();
+        }
+        
+        
+    }
+}
