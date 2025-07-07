@@ -84,5 +84,7 @@ namespace FastFilmography.Client.Models.MovieModels
 
         [JsonProperty("credits")]
         public Credits Credits { get; set; }
+
+        public bool Selectable { get; set; } = true;
     }
 }

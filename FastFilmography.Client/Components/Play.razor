@@ -25,9 +25,22 @@ else
                 <span class="h3">@selectionText</span>
             </div>
             <div class="col" style="justify-content:center;">
-                <GameTimer DisplayMovies="@DisplayMovies" Type="GameTimer.TimerType.PreGame" />
+                @if (displayMovies == false) 
+                {
+                    <GameTimer DisplayMovies="@DisplayMovies" DisableMovieSelection="@DisableMovieSelection" Type="GameTimer.TimerType.PreGame" />
+                }
+                else
+                {
+                    <GameTimer DisplayMovies="@DisplayMovies" DisableMovieSelection="@DisableMovieSelection" Type="GameTimer.TimerType.InGame" />
+                }
 
-                <MovieContainer UpdateSelectionDisplayText="UpdateSelectionText" DisplayMovies="@displayMovies" Actor="actor" />
+
+                <MovieContainer 
+                    @ref="movieContainer"
+                    UpdateSelectionDisplayText="UpdateSelectionText" 
+                    DisplayMovies="@displayMovies" 
+                    DisableMovieSelection="@DisableMovieSelection" 
+                    Actor="actor" />
 
             </div>
         </div>
@@ -43,6 +56,8 @@ else
     [Parameter]
     public EventCallback<bool> SetGameInProgress { get; set; }
 
+    //public EventCallback DisableMovieSelection { get; set; }
+
     private TMDBConfiguration? tmdbConfiguration;
     private Actor? actor;
     private bool configurationLoaded = false;
@@ -55,6 +70,7 @@ else
     private string selectionText = "";
     private List<PopularActor> popularActors = new List<PopularActor>();
     private List<PopularActor> poplarActorsUsed = new List<PopularActor>();
+    private MovieContainer movieContainer;
 
     protected override async Task OnInitializedAsync()
     {
@@ -127,9 +143,14 @@ else
         await InvokeAsync(StateHasChanged);
     }
 
+    private async void DisableMovieSelection()
+    { 
+        movieContainer.DisableMovie();
+    }
+
     private async Task UpdateSelectionText(string text){
         selectionText = "";
-        await Task.Delay(150);
+        await Task.Delay(50);
         selectionText = text;
     }
 }

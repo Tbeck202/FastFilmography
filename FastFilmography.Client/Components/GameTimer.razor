@@ -9,6 +9,9 @@
     [Parameter]
     public EventCallback<bool> DisplayMovies { get; set; }
 
+    [Parameter]
+    public EventCallback DisableMovieSelection { get; set; }
+
     private System.Timers.Timer _timer;
 
     private int _timerCount;
@@ -25,8 +28,8 @@
 
     protected override async Task OnInitializedAsync()
     {
-        _timerCount = Type == TimerType.PreGame ? 3 : 10; // Set initial count for Pre-Game timer
-        _countdownSpeed = Type == TimerType.PreGame ? 1500 : 2000;
+        _timerCount = Type == TimerType.PreGame ? 3 : 10; 
+        _countdownSpeed = Type == TimerType.PreGame ? 1500 : 1000;
         await RunTimer();
     }
 
@@ -39,28 +42,47 @@
 
     private async void CountDownTimer(Object source, System.Timers.ElapsedEventArgs e)
     {
-        if (_timerCount > 0)
+        if (_timerCount >= 0)
         {
-
-            switch (_timerCount)
+            if (Type == TimerType.PreGame)
             {
-                case 3:
-                    TimerDisplay = "Lights...";
-                    await InvokeAsync(StateHasChanged);
-                    break;
-                case 2:
-                    TimerDisplay = "Camera...";
-                    await InvokeAsync(StateHasChanged);
-                    break;
-                case 1:
-                    TimerDisplay = "Action!";
-                    await InvokeAsync(() =>
-                    {
-                        DisplayMovies.InvokeAsync(true);
-                        StateHasChanged();
-                    });
-                    break;
+                switch (_timerCount)
+                {
+                    case 3:
+                        TimerDisplay = "Lights...";
+                        await InvokeAsync(StateHasChanged);
+                        break;
+                    case 2:
+                        TimerDisplay = "Camera...";
+                        await InvokeAsync(StateHasChanged);
+                        break;
+                    case 1:
+                        TimerDisplay = "Action!";
+                        //Thread.Sleep(1500);
+                        break;
+                    case 0:
+                        await InvokeAsync(() =>
+                            {
+                                DisplayMovies.InvokeAsync(true);
+                                StateHasChanged();
+                            });
+                        break;
+                }
             }
+            else
+            {
+                //TimerDisplay = _timerCount.ToString();
+                if ((_timerCount < 10 && _timerCount % 2 == 0) || _timerCount == 0)
+                { 
+                    await InvokeAsync(() =>
+                        {
+                            DisableMovieSelection.InvokeAsync();
+                        });
+                }
+                await InvokeAsync(() => StateHasChanged());
+
+            }
+            
 
             _timerCount -= 1;
         }
