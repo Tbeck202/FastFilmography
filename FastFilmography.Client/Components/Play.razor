@@ -27,20 +27,20 @@ else
             <div class="col" style="justify-content:center;">
                 @if (displayMovies == false) 
                 {
-                    <GameTimer DisplayMovies="@DisplayMovies" DisableMovieSelection="@DisableMovieSelection" Type="GameTimer.TimerType.PreGame" />
+                    <GameTimer @ref="pregameTimer" DisplayMovies="@DisplayMovies" DisableMovieSelection="@DisableMovieSelection" Type="GameTimer.TimerType.PreGame" />
                 }
                 else
                 {
-                    <GameTimer DisplayMovies="@DisplayMovies" DisableMovieSelection="@DisableMovieSelection" Type="GameTimer.TimerType.InGame" />
+                    <GameTimer @ref="inGameTimer" DisplayMovies="@DisplayMovies" DisableMovieSelection="@DisableMovieSelection" Type="GameTimer.TimerType.InGame" />
                 }
 
 
                 <MovieContainer 
-                    @ref="movieContainer"
-                    UpdateSelectionDisplayText="UpdateSelectionText" 
-                    DisplayMovies="@displayMovies" 
-                    DisableMovieSelection="@DisableMovieSelection" 
-                    Actor="actor" />
+                                @ref="movieContainer"
+                                ProcessMovieSelection="ProcessMovieSelection"
+                                DisplayMovies="@displayMovies" 
+                                DisableMovieSelection="@DisableMovieSelection" 
+                                Actor="actor" />
 
             </div>
         </div>
@@ -70,6 +70,8 @@ else
     private string selectionText = "";
     private List<PopularActor> popularActors = new List<PopularActor>();
     private List<PopularActor> poplarActorsUsed = new List<PopularActor>();
+    private GameTimer pregameTimer;
+    private GameTimer inGameTimer;
     private MovieContainer movieContainer;
 
     protected override async Task OnInitializedAsync()
@@ -148,9 +150,13 @@ else
         movieContainer.DisableMovie();
     }
 
-    private async Task UpdateSelectionText(string text){
-        selectionText = "";
+    private async Task ProcessMovieSelection(bool isSelectionCorrect)
+    {
         await Task.Delay(50);
-        selectionText = text;
+        selectionText = isSelectionCorrect ? "Correct!" : "Try Again!";
+        if(isSelectionCorrect)
+        {
+            inGameTimer.StopTimer();
+        }
     }
 }

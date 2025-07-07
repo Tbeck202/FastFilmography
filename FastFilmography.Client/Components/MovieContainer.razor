@@ -27,7 +27,7 @@ else
     public bool DisplayMovies { get; set; }
 
     [Parameter]
-    public EventCallback<string> UpdateSelectionDisplayText { get; set; }
+    public EventCallback<bool> ProcessMovieSelection { get; set; }
 
     [Parameter]
     public EventCallback DisableMovieSelection { get; set; }
@@ -38,6 +38,7 @@ else
     private bool _displayMovies = false;
     private bool _keySelected = false;  
     private Movie _answerKey = new Movie();
+    private bool _isSelectionCorrect = false;
     private string answerText = "";
 
     protected override async Task OnInitializedAsync()
@@ -108,8 +109,9 @@ else
 
     private async Task CheckMovieSelection(int movieId)
     {
-        answerText = movieId == _answerKey.Id ? "Correct!" : "Try Again!";
-        await UpdateSelectionDisplayText.InvokeAsync(answerText);
+        _isSelectionCorrect = movieId == _answerKey.Id;
+        //answerText = movieId == _answerKey.Id ? "Correct!" : "Try Again!";
+        await ProcessMovieSelection.InvokeAsync(_isSelectionCorrect);
     }
 
     public void DisableMovie()
