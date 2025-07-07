@@ -22,12 +22,13 @@ else
         <div class="row">
             <div class="col" style="max-width: 200px;">
                 <ActorDisplay Actor="actor" Reload="@ReloadActor" />
+                <span class="h3">@selectionText</span>
             </div>
             <div class="col" style="justify-content:center;">
                 <Timer DisplayMovies="@DisplayMovies" Type="Timer.TimerType.PreGame" />
 
-                <MovieContainer DisplayMovies="@displayMovies" Actor="actor" />
-              
+                <MovieContainer UpdateSelectionDisplayText="UpdateSelectionText" DisplayMovies="@displayMovies" Actor="actor" />
+
             </div>
         </div>
     </section>
@@ -51,6 +52,7 @@ else
     private bool reloadActor = false;
     private bool displayMovies = false;
     private string imagePath = "https://image.tmdb.org/t/p/w300/";
+    private string selectionText = "";
     private List<PopularActor> popularActors = new List<PopularActor>();
     private List<PopularActor> poplarActorsUsed = new List<PopularActor>();
 
@@ -93,7 +95,7 @@ else
         actorLoaded = false;
         displayMovies = false;
         actor = new Actor();
-        
+
         actor = await Tmdbapi.GetActorByIdAsync(PickPopularActor());
         actor.CastAndCrewCredits = await Tmdbapi.GetCastAndCrewCreditsAsync(actor.Id);
 
@@ -122,5 +124,11 @@ else
     {
         displayMovies = display;
         StateHasChanged();
+    }
+
+    private async Task UpdateSelectionText(string text){
+        selectionText = "";
+        await Task.Delay(150);
+        selectionText = text;
     }
 }
