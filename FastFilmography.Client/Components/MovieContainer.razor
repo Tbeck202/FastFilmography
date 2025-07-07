@@ -7,6 +7,7 @@
 }
 else
 {
+    <h2>@_gameResultMessage</h2>
     <section class="container-fluid" width="400px">
         <div class="row">
             @foreach (Movie movie in _movies)
@@ -34,12 +35,17 @@ else
 
     private TMDBConfiguration? _tmdbConfiguration;
     private string _imagePath = "https://image.tmdb.org/t/p/w300/";
-    private List<Movie> _movies = new List<Movie>();
-    private bool _displayMovies = false;
-    private bool _keySelected = false;  
-    private Movie _answerKey = new Movie();
-    private bool _isSelectionCorrect = false;
     private string answerText = "";
+    private string _gameResultMessage = string.Empty;
+    
+    private bool _displayMovies = false;
+    private bool _keySelected = false; 
+    private bool _isSelectionCorrect = false;
+
+    private List<Movie> _movies = new List<Movie>();
+    private Movie _answerKey = new Movie();
+    
+    
 
     protected override async Task OnInitializedAsync()
     {
@@ -129,6 +135,12 @@ else
                 randomIndex = new Random().Next(0, _movies.Count);
             }
         }
+        StateHasChanged();
+    }
+
+    public void UpdateGameResultMessage(string message)
+    {
+        _gameResultMessage = message;
         StateHasChanged();
     }
 }

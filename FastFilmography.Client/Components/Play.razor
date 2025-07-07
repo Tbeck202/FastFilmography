@@ -15,7 +15,6 @@ else
     <button disabled class="btn btn-primary" @onclick="LoadActor">Load Actor</button>
 }
 
-
 @if (actorLoaded)
 {
     <section class="container-fluid text-center">
@@ -36,11 +35,11 @@ else
 
 
                 <MovieContainer 
-                                @ref="movieContainer"
-                                ProcessMovieSelection="ProcessMovieSelection"
-                                DisplayMovies="@displayMovies" 
-                                DisableMovieSelection="@DisableMovieSelection" 
-                                Actor="actor" />
+                @ref="movieContainer"
+                ProcessMovieSelection="ProcessMovieSelection"
+                DisplayMovies="@displayMovies" 
+                DisableMovieSelection="@DisableMovieSelection" 
+                Actor="actor" />
 
             </div>
         </div>
@@ -66,9 +65,12 @@ else
     private bool actorLoaded = false;
     private bool reloadActor = false;
     private bool displayMovies = false;
+    private bool gameOver = false;
     private string imagePath = "https://image.tmdb.org/t/p/w300/";
-    private string selectionText = "";
+    private string selectionText = string.Empty;
+    //private string gameResultMessage = string.Empty;
     private int actorReloads = 0;
+    private int selectionGuesses = 0;
     private List<PopularActor> popularActors = new List<PopularActor>();
     private List<PopularActor> poplarActorsUsed = new List<PopularActor>();
     private GameTimer pregameTimer;
@@ -157,11 +159,17 @@ else
 
     private async Task ProcessMovieSelection(bool isSelectionCorrect)
     {
+        selectionGuesses++;
         await Task.Delay(50);
         selectionText = isSelectionCorrect ? "Correct!" : "Try Again!";
         if(isSelectionCorrect)
         {
+            string gameResultMessage = selectionGuesses == 1 ? 
+            $"Nice work! You figured it out in {selectionGuesses} try!" :
+            $"Nice work! You figured it out in {selectionGuesses} tries!";
             inGameTimer.StopTimer();
+            gameOver = true;
+            movieContainer.UpdateGameResultMessage(gameResultMessage);
         }
     }
 }
