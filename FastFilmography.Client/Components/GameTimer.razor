@@ -11,7 +11,9 @@
 
     private System.Timers.Timer _timer;
 
-    private int _timerCount; 
+    private int _timerCount;
+
+    private int _countdownSpeed;
 
     private string TimerDisplay = "";
 
@@ -24,26 +26,15 @@
     protected override async Task OnInitializedAsync()
     {
         _timerCount = Type == TimerType.PreGame ? 3 : 10; // Set initial count for Pre-Game timer
+        _countdownSpeed = Type == TimerType.PreGame ? 1500 : 2000;
         await RunTimer();
     }
-    // protected override void OnParametersSet()
-    // {
-    //     RunTimer();
-    // }
 
     private async Task RunTimer() 
     {
-        if (Type == TimerType.PreGame)
-        {
-            _timer = new System.Timers.Timer(1500);
-            _timer.Elapsed += CountDownTimer;
-            // Logic for Pre-Game Timer
-            _timer.Enabled = true;
-        }
-        else if (Type == TimerType.InGame)
-        {
-            // Logic for In-Game Timer
-        }
+        _timer = new System.Timers.Timer(_countdownSpeed);  
+        _timer.Elapsed += CountDownTimer;
+        _timer.Enabled = true;
     }
 
     private async void CountDownTimer(Object source, System.Timers.ElapsedEventArgs e)
@@ -78,7 +69,5 @@
             _timer.Enabled = false;
             _timer.Dispose();
         }
-        
-        
     }
 }
