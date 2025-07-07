@@ -47,5 +47,7 @@ namespace FastFilmography.Client.Models.ActorModels
         public string ProfilePath { get; set; }
 
         public CastAndCrewCredits CastAndCrewCredits { get; set; }
+
+        public bool ReloadEnabled { get; set; } = true;
     }
 }

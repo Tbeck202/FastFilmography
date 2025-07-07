@@ -90,4 +90,18 @@
             _timer.Dispose();
         }
     }
+
+    public async void ResetTimer()
+    {
+        _timer.Stop();
+        _timer.Dispose();
+        _countdownSpeed = Type == TimerType.PreGame ? 1500 : 1000;
+        _timerCount = Type == TimerType.PreGame ? 3 : 10;
+        await RunTimer();
+    }
+
+    public void StopTimer()
+    {
+        _timer.Stop();
+    }
 }
