@@ -29,6 +29,9 @@ else
     [Parameter]
     public EventCallback<string> UpdateSelectionDisplayText { get; set; }
 
+    [Parameter]
+    public EventCallback DisableMovieSelection { get; set; }
+
     private TMDBConfiguration? _tmdbConfiguration;
     private string _imagePath = "https://image.tmdb.org/t/p/w300/";
     private List<Movie> _movies = new List<Movie>();
@@ -107,5 +110,23 @@ else
     {
         answerText = movieId == _answerKey.Id ? "Correct!" : "Try Again!";
         await UpdateSelectionDisplayText.InvokeAsync(answerText);
+    }
+
+    public void DisableMovie()
+    {
+        bool movieDisabled = false;
+        int randomIndex = new Random().Next(0, _movies.Count);
+        while(movieDisabled == false)
+        {
+            if (_movies[randomIndex].Selectable == true && _movies[randomIndex].Id != _answerKey.Id)
+            {
+                _movies[randomIndex].Selectable = false;
+                movieDisabled = true;
+            }
+            else{
+                randomIndex = new Random().Next(0, _movies.Count);
+            }
+        }
+        StateHasChanged();
     }
 }

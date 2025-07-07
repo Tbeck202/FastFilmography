@@ -9,7 +9,13 @@
             <img src="@Movie.PosterPath" class="card-img-top" alt="...">
             <div class="card-body">
                 <h6 class="card-title">@Movie.Title</h6>
-                <a href="#" class="btn btn-primary" @onclick="OnSelectMovie">Select</a>
+                @if(Movie.Selectable){
+                    <a href="#" class="btn btn-primary" @onclick="OnSelectMovie">Select</a>
+                }
+                else
+                {
+                    <button disabled class="btn btn-primary" @onclick="OnSelectMovie">Select</button>
+                }
             </div>
         </div>
     }
@@ -22,6 +28,9 @@
 
     [Parameter]
     public bool DisplayMovie { get; set; }
+
+    [Parameter]
+    public EventCallback DisableMovieSelection { get; set; }
 
     [Parameter]
     public EventCallback<int> MovieSelected { get; set; }

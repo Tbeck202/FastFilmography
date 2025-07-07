@@ -1,0 +1,93 @@
+﻿@rendermode InteractiveAuto
+
+<h3>@TimerDisplay</h3>
+
+@code {
+    [Parameter]
+    public TimerType Type { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> DisplayMovies { get; set; }
+
+    [Parameter]
+    public EventCallback DisableMovieSelection { get; set; }
+
+    private System.Timers.Timer _timer;
+
+    private int _timerCount;
+
+    private int _countdownSpeed;
+
+    private string TimerDisplay = "";
+
+    public enum TimerType
+    {
+        PreGame,
+        InGame
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        _timerCount = Type == TimerType.PreGame ? 3 : 10; 
+        _countdownSpeed = Type == TimerType.PreGame ? 1500 : 1000;
+        await RunTimer();
+    }
+
+    private async Task RunTimer() 
+    {
+        _timer = new System.Timers.Timer(_countdownSpeed);  
+        _timer.Elapsed += CountDownTimer;
+        _timer.Enabled = true;
+    }
+
+    private async void CountDownTimer(Object source, System.Timers.ElapsedEventArgs e)
+    {
+        if (_timerCount >= 0)
+        {
+            if (Type == TimerType.PreGame)
+            {
+                switch (_timerCount)
+                {
+                    case 3:
+                        TimerDisplay = "Lights...";
+                        await InvokeAsync(StateHasChanged);
+                        break;
+                    case 2:
+                        TimerDisplay = "Camera...";
+                        await InvokeAsync(StateHasChanged);
+                        break;
+                    case 1:
+                        TimerDisplay = "Action!";
+                        await InvokeAsync(StateHasChanged);
+                        break;
+                    case 0:
+                        await InvokeAsync(() =>
+                            {
+                                DisplayMovies.InvokeAsync(true);
+                                StateHasChanged();
+                            });
+                        break;
+                }
+            }
+            else
+            {
+                if ((_timerCount < 10 && _timerCount % 2 == 0) || _timerCount == 0)
+                { 
+                    await InvokeAsync(() =>
+                        {
+                            DisableMovieSelection.InvokeAsync();
+                        });
+                }
+                await InvokeAsync(() => StateHasChanged());
+            }
+            
+
+            _timerCount -= 1;
+        }
+        else
+        {
+            _timer.Enabled = false;
+            _timer.Dispose();
+        }
+    }
+}
