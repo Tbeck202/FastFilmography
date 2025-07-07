@@ -4,6 +4,14 @@
     <img src="@Actor.ProfilePath" class="card-img-top" alt="...">
     <div class="card-body">
         <h5 class="card-title">@Actor.Name</h5>
+        @if (Actor.ReloadEnabled)
+        {
+            <a href="#" class="btn btn-primary" @onclick="ReloadActor">@buttonText</a>
+        }
+        else
+        {
+            <button disabled class="btn btn-primary">@buttonText</button>
+        }
         <!--a href="#" class="btn btn-primary" onclick="ReloadActor">buttonText</a-->
     </div>
 </div>

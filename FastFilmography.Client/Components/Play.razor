@@ -68,6 +68,7 @@ else
     private bool displayMovies = false;
     private string imagePath = "https://image.tmdb.org/t/p/w300/";
     private string selectionText = "";
+    private int actorReloads = 0;
     private List<PopularActor> popularActors = new List<PopularActor>();
     private List<PopularActor> poplarActorsUsed = new List<PopularActor>();
     private GameTimer pregameTimer;
@@ -134,13 +135,17 @@ else
 
     private void ReloadActor()
     {
+        actorReloads++;
         reloadActor = true;
+        pregameTimer.StopTimer();
         LoadActor();
+        pregameTimer = new GameTimer();
     }
 
     private async void DisplayMovies(bool display)
     {
         displayMovies = display;
+        actor.ReloadEnabled = false;
         //StateHasChanged();
         await InvokeAsync(StateHasChanged);
     }
