@@ -58,7 +58,7 @@
                         break;
                     case 1:
                         TimerDisplay = "Action!";
-                        //Thread.Sleep(1500);
+                        await InvokeAsync(StateHasChanged);
                         break;
                     case 0:
                         await InvokeAsync(() =>
@@ -71,7 +71,6 @@
             }
             else
             {
-                //TimerDisplay = _timerCount.ToString();
                 if ((_timerCount < 10 && _timerCount % 2 == 0) || _timerCount == 0)
                 { 
                     await InvokeAsync(() =>
@@ -80,7 +79,6 @@
                         });
                 }
                 await InvokeAsync(() => StateHasChanged());
-
             }
             
 
