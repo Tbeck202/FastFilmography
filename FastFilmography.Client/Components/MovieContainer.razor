@@ -1,16 +1,21 @@
 ﻿@inject ITMDBApi Tmdbapi
 @rendermode @(new InteractiveAutoRenderMode(prerender: false))
 
-
-<section class="container-fluid" width="400px">
-    <div class="row">
-        @foreach (Movie movie in _movies)
-        {
-            <MovieDisplay DisplayMovie="@_displayMovies" Movie="movie" />
-        }
-    </div>
-</section>
-
+@if (_movies.Count == 0)
+{
+    <p>Loading movies...</p>
+}
+else
+{
+    <section class="container-fluid" width="400px">
+        <div class="row">
+            @foreach (Movie movie in _movies)
+            {
+                <MovieDisplay MovieSelected="@CheckMovieSelection" DisplayMovie="@_displayMovies" Movie="movie" />
+            }
+        </div>
+    </section>
+}
 
 
 
@@ -21,12 +26,16 @@
     [Parameter]
     public bool DisplayMovies { get; set; }
 
+    [Parameter]
+    public EventCallback<string> UpdateSelectionDisplayText { get; set; }
+
     private TMDBConfiguration? _tmdbConfiguration;
     private string _imagePath = "https://image.tmdb.org/t/p/w300/";
     private List<Movie> _movies = new List<Movie>();
     private bool _displayMovies = false;
     private bool _keySelected = false;  
     private Movie _answerKey = new Movie();
+    private string answerText = "";
 
     protected override async Task OnInitializedAsync()
     {
@@ -47,7 +56,8 @@
     private async Task<List<Movie>> LoadMovies()
     {
         List<Movie> movies = new();
-        TopRatedMovieDataSet possibleKeys = new();
+        TopRatedMovieDataSet topRatedMovies = new();
+        List<Movie> possibleKeys = new();
         List<int> idsUsed = new();
         int randomIndex = 0;
 
@@ -58,6 +68,7 @@
             if (movie != null
                 && !string.IsNullOrEmpty(movie.Title)
                 && !string.IsNullOrEmpty(movie.Overview)
+                && !string.IsNullOrEmpty(movie.PosterPath)
                 && !idsUsed.Contains(movie.Id))
             {
                 idsUsed.Add(movie.Id);
@@ -67,13 +78,16 @@
         }
 
         randomIndex = new Random().Next(1, 25);
-        possibleKeys = await Tmdbapi.GetMoviesForKeyAsync(randomIndex);
+        topRatedMovies = await Tmdbapi.GetMoviesForKeyAsync(randomIndex);
+        possibleKeys = topRatedMovies.Movies
+            .Where(m => m.OriginalLanguage == "en")
+            .ToList();
 
         while(!_keySelected)
         {
-            randomIndex = new Random().Next(0, possibleKeys.Movies.Count);
+            randomIndex = new Random().Next(0, possibleKeys.Count);
 
-            Movie possibleKey = possibleKeys.Movies[randomIndex];
+            Movie possibleKey = possibleKeys[randomIndex];
             possibleKey.Credits = await Tmdbapi.GetCastAndCrewForMovieAsync(possibleKey.Id);
 
             bool actorInPossibleKey = possibleKey.Credits.Cast.Any(c => c.Id == Actor.Id);
@@ -87,5 +101,11 @@
         }
         movies = movies.OrderBy(m => m.Title).ToList();
         return movies;
+    }
+
+    private async Task CheckMovieSelection(int movieId)
+    {
+        answerText = movieId == _answerKey.Id ? "Correct!" : "Try Again!";
+        await UpdateSelectionDisplayText.InvokeAsync(answerText);
     }
 }
