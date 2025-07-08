@@ -10,7 +10,7 @@
     public EventCallback<bool> DisplayMovies { get; set; }
 
     [Parameter]
-    public EventCallback DisableMovieSelection { get; set; }
+    public EventCallback<bool> DisableMovieSelection { get; set; }
 
     private System.Timers.Timer _timer;
 
@@ -19,6 +19,8 @@
     private int _countdownSpeed;
 
     private string TimerDisplay = "";
+
+    private bool _gameOver = false;
 
     public enum TimerType
     {
@@ -72,10 +74,11 @@
             else
             {
                 if ((_timerCount < 10 && _timerCount % 2 == 0) || _timerCount == 0)
-                { 
+                {
+                    _gameOver = _timerCount == 0 ? true : false;
                     await InvokeAsync(() =>
                         {
-                            DisableMovieSelection.InvokeAsync();
+                            DisableMovieSelection.InvokeAsync(_gameOver);
                         });
                 }
                 await InvokeAsync(() => StateHasChanged());
