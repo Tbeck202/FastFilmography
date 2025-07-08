@@ -3,17 +3,26 @@
 @rendermode @(new InteractiveAutoRenderMode(prerender: false))
 @inject ITMDBApi Tmdbapi
 
-@if (configurationLoaded && enableLoadButton)
-{
-    if (!actorLoaded && !reloadActor) 
+<section class="container-fluid text-center justify-content-center">
+    @if (gameOver)
     {
-        <button class="btn btn-primary" @onclick="LoadActor">Load Actor</button>
+        <h2>@gameResultMessage</h2>
+        <button class="btn btn-primary" @onclick="ReloadActor">Play Again!</button>
     }
-}
-else
-{
-    <button disabled class="btn btn-primary" @onclick="LoadActor">Load Actor</button>
-}
+
+    @if (configurationLoaded && enableLoadButton)
+    {
+        if (!actorLoaded && !reloadActor)
+        {
+            <button class="btn btn-primary" @onclick="LoadActor">Load Actor</button>
+        }
+    }
+    else
+    {
+        <button disabled class="btn btn-primary" @onclick="LoadActor">Load Actor</button>
+    }
+</section>
+
 
 @if (actorLoaded)
 {
@@ -68,6 +77,7 @@ else
     private bool gameOver = false;
     private string imagePath = "https://image.tmdb.org/t/p/w300/";
     private string selectionText = string.Empty;
+    private string gameResultMessage;
     //private string gameResultMessage = string.Empty;
     private int actorReloads = 0;
     private int selectionGuesses = 0;
@@ -115,6 +125,9 @@ else
         isLoading = true;
         actorLoaded = false;
         displayMovies = false;
+        gameOver = false;
+        selectionText = string.Empty;
+        selectionGuesses = 0;
         actor = new Actor();
 
         actor = await Tmdbapi.GetActorByIdAsync(PickPopularActor());
@@ -164,12 +177,12 @@ else
         selectionText = isSelectionCorrect ? "Correct!" : "Try Again!";
         if(isSelectionCorrect)
         {
-            string gameResultMessage = selectionGuesses == 1 ? 
+            gameResultMessage = selectionGuesses == 1 ? 
             $"Nice work! You figured it out in {selectionGuesses} try!" :
             $"Nice work! You figured it out in {selectionGuesses} tries!";
             inGameTimer.StopTimer();
             gameOver = true;
-            movieContainer.UpdateGameResultMessage(gameResultMessage);
+            //movieContainer.UpdateGameResultMessage(gameResultMessage);
         }
     }
 }
