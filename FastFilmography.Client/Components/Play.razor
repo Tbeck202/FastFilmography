@@ -48,7 +48,6 @@
                 ProcessMovieSelection="ProcessMovieSelection"
                 DisplayMovies="@displayMovies" 
                 Actor="actor" />
-                <!-- DisableMovieSelection="DisableMovieSelection"  -->
 
             </div>
         </div>
@@ -64,8 +63,6 @@
     [Parameter]
     public EventCallback<bool> SetGameInProgress { get; set; }
 
-    //public EventCallback DisableMovieSelection { get; set; }
-
     private TMDBConfiguration? tmdbConfiguration;
     private Actor? actor;
     private bool configurationLoaded = false;
@@ -78,7 +75,6 @@
     private string imagePath = "https://image.tmdb.org/t/p/w300/";
     private string selectionText = string.Empty;
     private string gameResultMessage;
-    //private string gameResultMessage = string.Empty;
     private int actorReloads = 0;
     private int selectionGuesses = 0;
     private List<PopularActor> popularActors = new List<PopularActor>();
