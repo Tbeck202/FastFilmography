@@ -7,7 +7,6 @@
 }
 else
 {
-    <h2>@_gameResultMessage</h2>
     <section class="container-fluid" width="400px">
         <div class="row">
             @foreach (Movie movie in _movies)
@@ -30,22 +29,15 @@ else
     [Parameter]
     public EventCallback<bool> ProcessMovieSelection { get; set; }
 
-    [Parameter]
-    public EventCallback DisableMovieSelection { get; set; }
-
     private TMDBConfiguration? _tmdbConfiguration;
+    private List<Movie> _movies = new List<Movie>();
+    private Movie _answerKey = new Movie();
+
     private string _imagePath = "https://image.tmdb.org/t/p/w300/";
-    private string answerText = "";
-    private string _gameResultMessage = string.Empty;
-    
+
     private bool _displayMovies = false;
     private bool _keySelected = false; 
     private bool _isSelectionCorrect = false;
-
-    private List<Movie> _movies = new List<Movie>();
-    private Movie _answerKey = new Movie();
-    
-    
 
     protected override async Task OnInitializedAsync()
     {
@@ -116,31 +108,36 @@ else
     private async Task CheckMovieSelection(int movieId)
     {
         _isSelectionCorrect = movieId == _answerKey.Id;
-        //answerText = movieId == _answerKey.Id ? "Correct!" : "Try Again!";
         await ProcessMovieSelection.InvokeAsync(_isSelectionCorrect);
     }
 
-    public void DisableMovie()
+    public void DisableMovie(bool gameOver)
     {
-        bool movieDisabled = false;
-        int randomIndex = new Random().Next(0, _movies.Count);
-        while(movieDisabled == false)
+        if(gameOver)
         {
-            if (_movies[randomIndex].Selectable == true && _movies[randomIndex].Id != _answerKey.Id)
+            foreach(Movie movie in _movies.Where(m => m.Selectable == true).ToList())
             {
-                _movies[randomIndex].Selectable = false;
-                movieDisabled = true;
-            }
-            else{
-                randomIndex = new Random().Next(0, _movies.Count);
+                movie.Selectable = false;
             }
         }
-        StateHasChanged();
-    }
-
-    public void UpdateGameResultMessage(string message)
-    {
-        _gameResultMessage = message;
+        else
+        {
+            bool movieDisabled = false;
+            int randomIndex = new Random().Next(0, _movies.Count);
+            while (movieDisabled == false)
+            {
+                if (_movies[randomIndex].Selectable == true && _movies[randomIndex].Id != _answerKey.Id)
+                {
+                    _movies[randomIndex].Selectable = false;
+                    movieDisabled = true;
+                }
+                else
+                {
+                    randomIndex = new Random().Next(0, _movies.Count);
+                }
+            }
+        }
+        
         StateHasChanged();
     }
 }
