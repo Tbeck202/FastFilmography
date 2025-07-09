@@ -1,0 +1,52 @@
+﻿
+
+@* <div class="card" style="width: 12rem;">
+    <img src="@Actor.ProfilePath" class="card-img-top" alt="...">
+    <div class="card-body">
+        <h5 class="card-title">@Actor.Name</h5>
+        @if (Actor.ReloadEnabled)
+        {
+            <a href="#" class="btn btn-primary" @onclick="ReloadActor">@buttonText</a>
+        }
+        else
+        {
+            <button disabled class="btn btn-primary">@buttonText</button>
+        }
+        <!--a href="#" class="btn btn-primary" onclick="ReloadActor">buttonText</a-->
+    </div>
+</div> *@
+<div class="card text-bg-light" style="width: 12rem;">
+    <img src="@Actor?.ProfilePath" class="card-img-top" alt="A head shot of @Actor?.Name">
+    <div class="card-body">
+        <h4 class="card-title">@Actor.Name</h4>
+        @if (Actor.ReloadEnabled)
+        {
+            <button class="btn btn-primary" @onclick="ReloadActor">@buttonText</button>
+        }
+        else 
+        {
+            <button disabled class="btn btn-primary">@buttonText</button>
+        }
+        
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public Actor? Actor { get; set; }
+
+    [Parameter]
+    public string? ImagePath { get; set; }
+
+    [Parameter]
+    public EventCallback Reload { get; set; }
+
+    private string buttonText = "I don't know this Actor...";
+
+    private async void ReloadActor()
+    {
+        Actor = null; // Reset the actor
+        await Reload.InvokeAsync(); // Invoke the callback to reload the actor
+        StateHasChanged(); // Refresh the component
+    }
+}

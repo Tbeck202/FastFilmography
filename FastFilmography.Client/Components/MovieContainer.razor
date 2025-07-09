@@ -1,0 +1,162 @@
+﻿@inject ITMDBApi Tmdbapi
+@rendermode @(new InteractiveAutoRenderMode(prerender: false))
+
+@if (_movies.Count == 0)
+{
+    <div class="container-fluid bg-secondary rounded" style="max-height: 400px;">
+        <div class="row">
+            @for(int i = 0; i < 6; i++)
+            {
+                <div class="card" style="width: 10rem; margin: 5px;">
+                    <img src="https://placehold.co/300x450" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title placeholder-glow"><span class="placeholder col-10"></span></h5>
+                        <btn href="#" class="btn btn-primary" disabled>
+                            <span role="status">Loading...</span>
+                        </btn>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+}
+else
+{
+    <div class="container-fluid bg-secondary rounded" style="max-height: 400px;">
+        <div class="row">
+            @foreach (Movie movie in _movies)
+            {
+                <MovieDisplay MovieSelected="@CheckMovieSelection" DisplayMovie="@_displayMovies" Movie="movie" />
+            }
+        </div>
+    </div>
+    <h6 class="text-light display-6 my-3">@SelectionText</h6>
+}
+
+
+
+@code {
+    [Parameter]
+    public Actor Actor { get; set; }
+
+    [Parameter]
+    public bool DisplayMovies { get; set; }
+
+    [Parameter] 
+    public string? SelectionText { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> ProcessMovieSelection { get; set; }
+
+    private TMDBConfiguration? _tmdbConfiguration;
+    private List<Movie> _movies = new List<Movie>();
+    private Movie _answerKey = new Movie();
+
+    private string _imagePath = "https://image.tmdb.org/t/p/w300/";
+
+    private bool _displayMovies = false;
+    private bool _keySelected = false; 
+    private bool _isSelectionCorrect = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _tmdbConfiguration = await Tmdbapi.GetConfigurationAsync();
+        _imagePath = _tmdbConfiguration?.Images?.BaseUrl + _tmdbConfiguration?.Images?.PosterSizes?.Find(posterSize => posterSize == "w185") ?? "https://image.tmdb.org/t/p/w300/";
+        if (Actor != null)
+        {
+            _movies = await LoadMovies();
+            StateHasChanged();
+        }
+    }
+
+    protected override void OnParametersSet()
+    {
+        _displayMovies = DisplayMovies;
+    }
+
+    private async Task<List<Movie>> LoadMovies()
+    {
+        List<Movie> movies = new();
+        TopRatedMovieDataSet topRatedMovies = new();
+        List<Movie> possibleKeys = new();
+        List<int> idsUsed = new();
+        int randomIndex = 0;
+
+        while(movies.Count < 5)
+        {
+            randomIndex = new Random().Next(0, Actor.CastAndCrewCredits.CastCredits.Count);
+            Movie movie = await Tmdbapi.GetMovieById(Actor.CastAndCrewCredits.CastCredits[randomIndex].Id, false);
+            if (movie != null
+                && !string.IsNullOrEmpty(movie.Title)
+                && !string.IsNullOrEmpty(movie.Overview)
+                && !string.IsNullOrEmpty(movie.PosterPath)
+                && !idsUsed.Contains(movie.Id))
+            {
+                idsUsed.Add(movie.Id);
+                movie.PosterPath = _imagePath + movie.PosterPath;
+                movies.Add(movie);
+            }
+        }
+
+        randomIndex = new Random().Next(1, 25);
+        topRatedMovies = await Tmdbapi.GetMoviesForKeyAsync(randomIndex);
+        possibleKeys = topRatedMovies.Movies
+            .Where(m => m.OriginalLanguage == "en")
+            .ToList();
+
+        while(!_keySelected)
+        {
+            randomIndex = new Random().Next(0, possibleKeys.Count);
+
+            Movie possibleKey = possibleKeys[randomIndex];
+            possibleKey.Credits = await Tmdbapi.GetCastAndCrewForMovieAsync(possibleKey.Id);
+
+            bool actorInPossibleKey = possibleKey.Credits.Cast.Any(c => c.Id == Actor.Id);
+            if (actorInPossibleKey == false)
+            {
+                _answerKey = possibleKey;
+                _answerKey.PosterPath = _imagePath + _answerKey.PosterPath;
+                _keySelected = true;
+                movies.Add(_answerKey);
+            }
+        }
+        movies = movies.OrderBy(m => m.Title).ToList();
+        return movies;
+    }
+
+    private async Task CheckMovieSelection(int movieId)
+    {
+        _isSelectionCorrect = movieId == _answerKey.Id;
+        await ProcessMovieSelection.InvokeAsync(_isSelectionCorrect);
+    }
+
+    public void DisableMovie(bool gameOver)
+    {
+        if(gameOver)
+        {
+            foreach(Movie movie in _movies.Where(m => m.Selectable == true).ToList())
+            {
+                movie.Selectable = false;
+            }
+        }
+        else
+        {
+            bool movieDisabled = false;
+            int randomIndex = new Random().Next(0, _movies.Count);
+            while (movieDisabled == false)
+            {
+                if (_movies[randomIndex].Selectable == true && _movies[randomIndex].Id != _answerKey.Id)
+                {
+                    _movies[randomIndex].Selectable = false;
+                    movieDisabled = true;
+                }
+                else
+                {
+                    randomIndex = new Random().Next(0, _movies.Count);
+                }
+            }
+        }
+        
+        StateHasChanged();
+    }
+}

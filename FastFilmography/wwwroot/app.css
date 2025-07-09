@@ -2,6 +2,14 @@ html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
+#homeLink{
+    text-decoration: none !important; 
+}
+
+#homeLink:hover{
+    opacity: 75%;
+}
+
 a, .btn-link {
     color: #006bb7;
 }

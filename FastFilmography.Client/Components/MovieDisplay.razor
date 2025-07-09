@@ -1,0 +1,56 @@
+﻿@inject ITMDBApi Tmdbapi
+@rendermode InteractiveAuto
+
+@if(Movie != null)
+{
+    @if (DisplayMovie)
+    {
+        <div class="card" style="width: 10rem; margin: 5px;">
+            <img src="@Movie.PosterPath" class="card-img-top" alt="Poster art for @Movie.Title">
+            <div class="card-body">
+                <h5 class="card-title small">@Movie.Title</h5>
+                @if (Movie.Selectable)
+                {
+                    <button class="btn btn-primary" @onclick="OnSelectMovie">Select</button>
+                }
+                else
+                {
+                    <button disabled class="btn btn-primary">Select</button>
+                }
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="card" style="width: 10rem; margin: 5px;">
+            <img src="https://placehold.co/300x450" class="card-img-top" alt="...">
+            <div class="card-body">
+                <h5 class="card-title placeholder-glow"><span class="placeholder col-10"></span></h5>
+                <btn href="#" class="btn btn-primary" disabled>
+                    <span role="status">Loading...</span>
+                </btn>
+            </div>
+        </div>
+    }
+}
+
+
+@code {
+    [Parameter]
+    public Movie Movie { get; set; }
+
+    [Parameter]
+    public bool DisplayMovie { get; set; }
+
+    [Parameter]
+    public EventCallback DisableMovieSelection { get; set; }
+
+    [Parameter]
+    public EventCallback<int> MovieSelected { get; set; }
+
+
+    private async void OnSelectMovie(MouseEventArgs e)
+    {
+        await MovieSelected.InvokeAsync(Movie.Id);
+    }
+}

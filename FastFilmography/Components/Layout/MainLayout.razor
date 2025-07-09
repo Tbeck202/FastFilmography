@@ -1,16 +1,22 @@
 ﻿@inherits LayoutComponentBase
 
 <div class="page">
+    <!-- 
     <div class="sidebar">
         <NavMenu />
     </div>
-
+    -->
     <main>
         <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
+            @* <h1 class="text-dark"><a href="/" id="homeLink" class="link-dark" >Fast Filmography!</a></h1> *@
+            <a class="navbar-brand display-3 text-dark" href="">Fast Filmography</a>
+            @* <a href="../Components/Pages/About.razor" target="_blank">About</a> *@
+            <NavLink class="nav-link" href="about">
+                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> About
+            </NavLink>
         </div>
 
-        <article class="content px-4">
+        <article class="content px-4 bg-dark">
             @Body
         </article>
     </main>

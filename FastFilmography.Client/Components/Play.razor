@@ -1,0 +1,194 @@
+﻿
+@using Newtonsoft.Json
+@rendermode @(new InteractiveAutoRenderMode(prerender: false))
+@inject ITMDBApi Tmdbapi
+
+<section class="container text-center mt-2">
+    @if (gameOver)
+    {
+        <h2 class="text-light">@gameResultMessage</h2>
+        <section class="container-fluid text-center justify-content-center mt-3">
+            <button class="btn btn-primary btn-lg" @onclick="ReloadActor">Play Again!</button>
+        </section>
+
+    }
+
+    @if (configurationLoaded && enableLoadButton)
+    {
+        if (!actorLoaded && !reloadActor)
+        {
+            <section class="container-fluid text-center justify-content-center mt-3">
+                <button class="btn btn-primary btn-lg" @onclick="LoadActor">Load Actor</button>
+            </section>
+        }
+    }
+    else
+    {
+        <section class="container-fluid text-center justify-content-center mt-3">
+            <button class="btn btn-primary btn-lg" @onclick="LoadActor" disabled>Load Actor</button>
+        </section>
+    }
+</section>
+
+@if (actorLoaded == true && displayMovies == false)
+{
+    <GameTimer @ref="pregameTimer" DisplayMovies="@DisplayMovies" DisableMovieSelection="@DisableMovieSelection" Type="GameTimer.TimerType.PreGame" />
+}
+else if (actorLoaded == true && displayMovies == true)
+{
+    <GameTimer @ref="inGameTimer" DisplayMovies="@DisplayMovies" DisableMovieSelection="@DisableMovieSelection" Type="GameTimer.TimerType.InGame" />
+}
+
+@if (actorLoaded)
+{
+    <section class="container text-center mt-2">
+        <div class="row p-3 align-items-center" style="width: 1300px;">
+            <div class="col" style="max-width: 200px;">
+                <ActorDisplay Actor="actor" Reload="@ReloadActor" />
+                @* <span class="h3">@selectionText</span> *@
+            </div>
+            <div class="col" style="height: 389px;">
+                <MovieContainer 
+                @ref="movieContainer"
+                ProcessMovieSelection="ProcessMovieSelection"
+                DisplayMovies="@displayMovies" 
+                Actor="actor"
+                SelectionText="@selectionText"/>
+
+            </div>
+        </div>
+    </section>
+
+}
+@if (isLoading)
+{
+    <h6 class="text-light display-6 my-3">Loading...</h6>
+}
+
+@code {
+    [Parameter]
+    public EventCallback<bool> SetGameInProgress { get; set; }
+
+    private TMDBConfiguration? tmdbConfiguration;
+    private Actor? actor;
+    private bool configurationLoaded = false;
+    private bool enableLoadButton = false;
+    private bool isLoading = false;
+    private bool actorLoaded = false;
+    private bool reloadActor = false;
+    private bool displayMovies = false;
+    private bool gameOver = false;
+    private string imagePath = "https://image.tmdb.org/t/p/w300/";
+    private string selectionText = string.Empty;
+    private string gameResultMessage;
+    private int actorReloads = 0;
+    private int selectionGuesses = 0;
+    private List<PopularActor> popularActors = new List<PopularActor>();
+    private List<PopularActor> poplarActorsUsed = new List<PopularActor>();
+    private GameTimer pregameTimer;
+    private GameTimer inGameTimer;
+    private MovieContainer movieContainer;
+
+    protected override async Task OnInitializedAsync()
+    {
+        LoadPopularActors();
+        tmdbConfiguration = await Tmdbapi.GetConfigurationAsync();
+        imagePath = tmdbConfiguration?.Images?.BaseUrl + tmdbConfiguration?.Images?.PosterSizes?.Find(posterSize => posterSize == "w342") ?? "https://image.tmdb.org/t/p/w342/";
+        configurationLoaded = true;
+    }
+
+    private void LoadPopularActors()
+    {
+        using (StreamReader stream = File.OpenText(Tmdbapi.PopularActorsPath))
+        {
+            string json = stream.ReadToEnd();
+            popularActors = JsonConvert.DeserializeObject<List<PopularActor>>(json);
+            enableLoadButton = popularActors!= null && popularActors.Count > 0;
+        }
+    }
+
+    private int PickPopularActor()
+    {
+        int randomIndex = new Random().Next(0, popularActors.Count);
+        PopularActor? popularActor = popularActors[randomIndex];
+        while (poplarActorsUsed.Any(a => a.Id == popularActor!.Id))
+        {
+            randomIndex = new Random().Next(0, popularActors.Count);
+            popularActor = popularActors[randomIndex];
+        }
+        poplarActorsUsed.Add(popularActor!);
+
+        return popularActor!.Id;
+    }
+
+    protected async void LoadActor()
+    {
+        await SetGameInProgress.InvokeAsync(true);
+        isLoading = true;
+        actorLoaded = false;
+        displayMovies = false;
+        gameOver = false;
+        selectionText = string.Empty;
+        selectionGuesses = 0;
+        actor = new Actor();
+
+        actor = await Tmdbapi.GetActorByIdAsync(PickPopularActor());
+        actor.CastAndCrewCredits = await Tmdbapi.GetCastAndCrewCreditsAsync(actor.Id);
+
+        actorLoaded = string.IsNullOrEmpty(actor.Name) ? false : true;
+        if (actorLoaded)
+        {
+            actor.ProfilePath = $"{imagePath}{actor.ProfilePath}";
+        }
+        else
+        {
+            actor.Name = "Actor not found";
+            actor.ProfilePath = "https://via.placeholder.com/150";
+        }
+        isLoading = actorLoaded ? false : true;
+        reloadActor = false;
+        StateHasChanged();
+    }
+
+    private void ReloadActor()
+    {
+        actorReloads++;
+        reloadActor = true;
+        pregameTimer.StopTimer();
+        LoadActor();
+        pregameTimer = new GameTimer();
+    }
+
+    private async void DisplayMovies(bool display)
+    {
+        displayMovies = display;
+        actor.ReloadEnabled = false;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private void DisableMovieSelection(bool isGameOver)
+    { 
+        if (isGameOver){
+
+            gameResultMessage = "You weren't able to beat the clock this time. Try again?";
+            gameOver = true;
+        }
+        movieContainer.DisableMovie(isGameOver);
+    }
+
+    private async Task ProcessMovieSelection(bool isSelectionCorrect)
+    {
+        selectionGuesses++;
+        selectionText = string.Empty;
+        await Task.Delay(50);
+        selectionText = isSelectionCorrect ? "Correct!" : "Try Again!";
+        if(isSelectionCorrect)
+        {
+            gameResultMessage = selectionGuesses == 1 ? 
+            $"Nice work! You figured it out in {selectionGuesses} try!" :
+            $"Nice work! You figured it out in {selectionGuesses} tries!";
+            inGameTimer.StopTimer();
+            gameOver = true;
+        }
+    }
+}
