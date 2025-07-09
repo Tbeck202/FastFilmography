@@ -10,7 +10,7 @@
         <section class="container-fluid text-center justify-content-center mt-3">
             <button class="btn btn-primary btn-lg" @onclick="ReloadActor">Play Again!</button>
         </section>
-        
+
     }
 
     @if (configurationLoaded && enableLoadButton)
@@ -169,7 +169,7 @@ else if (actorLoaded == true && displayMovies == true)
     private void DisableMovieSelection(bool isGameOver)
     { 
         if (isGameOver){
-            
+
             gameResultMessage = "You weren't able to beat the clock this time. Try again?";
             gameOver = true;
         }
@@ -179,6 +179,7 @@ else if (actorLoaded == true && displayMovies == true)
     private async Task ProcessMovieSelection(bool isSelectionCorrect)
     {
         selectionGuesses++;
+        selectionText = string.Empty;
         await Task.Delay(50);
         selectionText = isSelectionCorrect ? "Correct!" : "Try Again!";
         if(isSelectionCorrect)
