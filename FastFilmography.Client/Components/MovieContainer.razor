@@ -3,18 +3,34 @@
 
 @if (_movies.Count == 0)
 {
-    <p>Loading movies...</p>
+    <div class="container-fluid bg-secondary rounded" style="max-height: 400px;">
+        <div class="row">
+            @for(int i = 0; i < 6; i++)
+            {
+                <div class="card" style="width: 10rem; margin: 5px;">
+                    <img src="https://placehold.co/300x450" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title placeholder-glow"><span class="placeholder col-10"></span></h5>
+                        <btn href="#" class="btn btn-primary" disabled>
+                            <span role="status">Loading...</span>
+                        </btn>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
 }
 else
 {
-    <section class="container-fluid" width="400px">
+    <div class="container-fluid bg-secondary rounded" style="max-height: 400px;">
         <div class="row">
             @foreach (Movie movie in _movies)
             {
                 <MovieDisplay MovieSelected="@CheckMovieSelection" DisplayMovie="@_displayMovies" Movie="movie" />
             }
         </div>
-    </section>
+    </div>
+    <h6 class="text-light display-6 my-3">@SelectionText</h6>
 }
 
 
@@ -25,6 +41,9 @@ else
 
     [Parameter]
     public bool DisplayMovies { get; set; }
+
+    [Parameter] 
+    public string? SelectionText { get; set; }
 
     [Parameter]
     public EventCallback<bool> ProcessMovieSelection { get; set; }
