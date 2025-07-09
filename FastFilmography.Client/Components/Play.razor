@@ -87,7 +87,7 @@
     {
         LoadPopularActors();
         tmdbConfiguration = await Tmdbapi.GetConfigurationAsync();
-        imagePath = tmdbConfiguration?.Images?.BaseUrl + tmdbConfiguration?.Images?.PosterSizes?.Find(posterSize => posterSize == "w185") ?? "https://image.tmdb.org/t/p/w300/";
+        imagePath = tmdbConfiguration?.Images?.BaseUrl + tmdbConfiguration?.Images?.PosterSizes?.Find(posterSize => posterSize == "w300") ?? "https://image.tmdb.org/t/p/w300/";
         configurationLoaded = true;
     }
 

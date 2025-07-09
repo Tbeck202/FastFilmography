@@ -4,18 +4,18 @@
 <PageTitle>Home</PageTitle>
 
 @if(!gameInProgress){
-    
-    <section class="container-fluid text-center">
-        <h1>Fast Filmography!</h1>
-        <div class="row">
 
-            <div class="col">
-                <p>Think you know a thing or two about movie stars?</p>
+    <section class="container-fluid text-center" style="max-width: 1000px;">
+        <h1 class="text-light mt-5">Fast Filmography!</h1>
+        <div class="row" style="justify-content: center;">
+            <div class="card text-bg-light m-3" style="width: 50rem;">
+                <div class="card-body">
+                    <p class="card-text">Think you know a thing or two about movie stars?</p>
+                    <p class="card-text">We'll show you a movie star and a handful of movies.<br />You'll have 10 seconds to pick which of those movies your star has <span class="fw-bold">NOT</span> appeared in.<br />Every couple of seconds, we'll remove a movie from the list until there's only one left.<br />Can you beat the clock??</p>
 
-                <p>We'll show you a movie star and a handful of movies.<br />You'll have 10 seconds to pick which of those movies your star has <span class="fw-bold">NOT</span> appeared in.<br />Every couple of seconds, we'll remove a movie from the list until there's only one left. Can you beat the clock??</p>
-                <p>Click the button below to play!</p>
+                </div>
             </div>
-
+            <h2 class="text-light">Click the button below to play!</h2>
         </div>
     </section>
 }
