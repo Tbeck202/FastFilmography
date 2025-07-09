@@ -3,51 +3,57 @@
 @rendermode @(new InteractiveAutoRenderMode(prerender: false))
 @inject ITMDBApi Tmdbapi
 
-<section class="container-fluid text-center justify-content-center">
+<section class="container text-center mt-2">
     @if (gameOver)
     {
         <h2>@gameResultMessage</h2>
-        <button class="btn btn-primary" @onclick="ReloadActor">Play Again!</button>
+        <section class="container-fluid text-center justify-content-center mt-3">
+            <button class="btn btn-primary btn-lg" @onclick="ReloadActor">Play Again!</button>
+        </section>
+        
     }
 
     @if (configurationLoaded && enableLoadButton)
     {
         if (!actorLoaded && !reloadActor)
         {
-            <button class="btn btn-primary" @onclick="LoadActor">Load Actor</button>
+            <section class="container-fluid text-center justify-content-center mt-3">
+                <button class="btn btn-primary btn-lg" @onclick="LoadActor">Load Actor</button>
+            </section>
         }
     }
     else
     {
-        <button disabled class="btn btn-primary" @onclick="LoadActor">Load Actor</button>
+        <section class="container-fluid text-center justify-content-center mt-3">
+            <button class="btn btn-primary btn-lg" @onclick="LoadActor" disabled>Load Actor</button>
+        </section>
     }
 </section>
 
+@if (displayMovies == false)
+{
+    <GameTimer @ref="pregameTimer" DisplayMovies="@DisplayMovies" DisableMovieSelection="@DisableMovieSelection" Type="GameTimer.TimerType.PreGame" />
+}
+else
+{
+    <GameTimer @ref="inGameTimer" DisplayMovies="@DisplayMovies" DisableMovieSelection="@DisableMovieSelection" Type="GameTimer.TimerType.InGame" />
+}
 
 @if (actorLoaded)
 {
-    <section class="container-fluid text-center">
-        <div class="row justify-content-center">
+    <section class="container text-center mt-2">
+        <div class="row p-3 align-items-center" style="width: 1300px;">
             <div class="col" style="max-width: 200px;">
                 <ActorDisplay Actor="actor" Reload="@ReloadActor" />
-                <span class="h3">@selectionText</span>
+                @* <span class="h3">@selectionText</span> *@
             </div>
-            <div class="col" style="justify-content:center;">
-                @if (displayMovies == false) 
-                {
-                    <GameTimer @ref="pregameTimer" DisplayMovies="@DisplayMovies" DisableMovieSelection="@DisableMovieSelection" Type="GameTimer.TimerType.PreGame" />
-                }
-                else
-                {
-                    <GameTimer @ref="inGameTimer" DisplayMovies="@DisplayMovies" DisableMovieSelection="@DisableMovieSelection" Type="GameTimer.TimerType.InGame" />
-                }
-
-
+            <div class="col" style="height: 389px;">
                 <MovieContainer 
                 @ref="movieContainer"
                 ProcessMovieSelection="ProcessMovieSelection"
                 DisplayMovies="@displayMovies" 
-                Actor="actor" />
+                Actor="actor"
+                SelectionText="@selectionText"/>
 
             </div>
         </div>
@@ -56,7 +62,7 @@
 }
 @if (isLoading)
 {
-    <p>Loading...</p>
+    <h6 class="text-light display-6 my-3">Loading...</h6>
 }
 
 @code {
