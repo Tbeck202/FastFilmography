@@ -6,7 +6,7 @@
 <section class="container text-center mt-2">
     @if (gameOver)
     {
-        <h2>@gameResultMessage</h2>
+        <h2 class="text-light">@gameResultMessage</h2>
         <section class="container-fluid text-center justify-content-center mt-3">
             <button class="btn btn-primary btn-lg" @onclick="ReloadActor">Play Again!</button>
         </section>
@@ -30,11 +30,11 @@
     }
 </section>
 
-@if (displayMovies == false)
+@if (actorLoaded == true && displayMovies == false)
 {
     <GameTimer @ref="pregameTimer" DisplayMovies="@DisplayMovies" DisableMovieSelection="@DisableMovieSelection" Type="GameTimer.TimerType.PreGame" />
 }
-else
+else if (actorLoaded == true && displayMovies == true)
 {
     <GameTimer @ref="inGameTimer" DisplayMovies="@DisplayMovies" DisableMovieSelection="@DisableMovieSelection" Type="GameTimer.TimerType.InGame" />
 }
@@ -93,7 +93,7 @@ else
     {
         LoadPopularActors();
         tmdbConfiguration = await Tmdbapi.GetConfigurationAsync();
-        imagePath = tmdbConfiguration?.Images?.BaseUrl + tmdbConfiguration?.Images?.PosterSizes?.Find(posterSize => posterSize == "w300") ?? "https://image.tmdb.org/t/p/w300/";
+        imagePath = tmdbConfiguration?.Images?.BaseUrl + tmdbConfiguration?.Images?.PosterSizes?.Find(posterSize => posterSize == "w342") ?? "https://image.tmdb.org/t/p/w342/";
         configurationLoaded = true;
     }
 
