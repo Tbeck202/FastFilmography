@@ -1,21 +1,4 @@
-﻿
-
-@* <div class="card" style="width: 12rem;">
-    <img src="@Actor.ProfilePath" class="card-img-top" alt="...">
-    <div class="card-body">
-        <h5 class="card-title">@Actor.Name</h5>
-        @if (Actor.ReloadEnabled)
-        {
-            <a href="#" class="btn btn-primary" @onclick="ReloadActor">@buttonText</a>
-        }
-        else
-        {
-            <button disabled class="btn btn-primary">@buttonText</button>
-        }
-        <!--a href="#" class="btn btn-primary" onclick="ReloadActor">buttonText</a-->
-    </div>
-</div> *@
-<div class="card text-bg-light" style="width: 12rem;">
+﻿<div class="card text-bg-light large-screens" style="width: 12rem;">
     <img src="@Actor?.ProfilePath" class="card-img-top" alt="A head shot of @Actor?.Name">
     <div class="card-body">
         <h4 class="card-title">@Actor.Name</h4>
@@ -27,7 +10,21 @@
         {
             <button disabled class="btn btn-primary">@buttonText</button>
         }
-        
+    </div>
+</div>
+
+<div class="card text-bg-light text-center small-screens" style="width: 8rem;">
+    <img src="@Actor?.ProfilePath" class="card-img-top" alt="A head shot of @Actor?.Name">
+    <div class="card-body">
+        <h4 class="card-title small">@Actor.Name</h4>
+        @if (Actor.ReloadEnabled)
+        {
+            <button class="btn btn-primary" @onclick="ReloadActor">@buttonText</button>
+        }
+        else
+        {
+            <button disabled class="btn btn-primary">@buttonText</button>
+        }
     </div>
 </div>
 

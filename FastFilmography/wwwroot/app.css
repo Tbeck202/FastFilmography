@@ -2,8 +2,83 @@ html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
-#homeLink{
-    text-decoration: none !important; 
+@media (width > 576px) {
+    .small-screens {
+        display: none !important;
+    }
+
+    .game-container {
+        text-align: center !important;
+        margin-top: .5rem !important;
+    }
+
+    .game-container-row {
+        width: 1300px;
+    }
+
+    .actor-col {
+        flex: 1 0 0%;
+        max-width: 200px;
+    }
+
+    .movie-col {
+        flex: 1 0 0%;
+        height: 390px;
+    }
+
+    .movie-container {
+        width: 100%;
+        padding-right: 15px;
+        padding-left: 15px;
+        margin-right: auto;
+        margin-left: auto;
+        max-height: 400px;
+        background-color: #6c757d;
+        border-radius: .25rem !important
+    }
+
+    .movie-container-row {
+        --bs-gutter-x: 1.5rem;
+        --bs-gutter-y: 0;
+        display: flex;
+        flex-wrap: wrap;
+        margin-top: calc(var(--bs-gutter-y) * -1);
+        margin-right: calc(var(--bs-gutter-x) * -.5);
+        margin-left: calc(var(--bs-gutter-x) * -.5);
+        justify-content: center !important
+    }
+    
+}
+
+@media (max-width: 576px) {
+    .large-screens {
+        display: none !important;
+    }
+
+    .game-container {
+        margin-top: .5rem !important;
+    }
+
+    .actor-col {
+        flex: 0 0 auto;
+        width: 33.33333333%; 
+        max-width: 150px;
+    }
+
+    .movie-col {
+        flex: 0 0 auto;
+        width: 66.66666667%;
+        /*background-color: #6c757d;*/
+        border-radius: .25rem !important
+    }
+
+    .movie-container {
+        
+    }
+}
+
+#homeLink {
+    text-decoration: none !important;
 }
 
 #homeLink:hover{
