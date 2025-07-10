@@ -38,14 +38,14 @@
                 </div>
                 <div class="col-9 justify-content-start">
                     <div class="card-body d-flex flex-column h-100 justify-content-between">
-                        <h5 class="card-title small">@Movie.Title</h5>
+                        <h5 class="card-title small truncate-text">@Movie.Title</h5>
                         @if (Movie.Selectable)
                         {
-                            <btn class="btn btn-primary btn-sm w-75" @onclick="OnSelectMovie">Select</btn>
+                            <button class="btn btn-primary btn-sm w-75" @onclick="OnSelectMovie">Select</button>
                         }
                         else
                         {
-                            <btn disabled class="btn btn-primary btn-sm w-75">Select</btn>
+                            <button disabled class="btn btn-primary btn-sm w-75">Select</button>
                         }
                         
                     </div>
@@ -66,9 +66,9 @@
 
                 <!-- Spacer div pushes the button down -->
                 <div class="row mt-auto">
-                    <btn class="btn btn-primary w-100" disabled>
+                    <button class="btn btn-primary w-100" disabled>
                         <span role="status">Loading...</span>
-                    </btn>
+                    </button>
                 </div>
 
             </div>
@@ -82,7 +82,7 @@
                 <div class="col-9 justify-content-start">
                     <div class="card-body d-flex flex-column h-100 justify-content-between">
                         <h5 class="card-title small placeholder-glow"><span class="placeholder col-10"></span></h5>
-                        <btn disabled class="btn btn-primary btn-sm w-75"><span role="status">Loading...</span></btn>
+                        <button disabled class="btn btn-primary btn-sm w-75"><span role="status">Loading...</span></button>
                     </div>
                 </div>
             </div>
