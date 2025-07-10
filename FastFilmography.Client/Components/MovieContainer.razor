@@ -130,11 +130,11 @@ else
         await ProcessMovieSelection.InvokeAsync(_isSelectionCorrect);
     }
 
-    public void DisableMovie(bool gameOver)
+    public void DisableMovie(bool gameOver, int answerId = 0)
     {
         if(gameOver)
         {
-            foreach(Movie movie in _movies.Where(m => m.Selectable == true).ToList())
+            foreach(Movie movie in _movies.Where(m => m.Selectable == true && m.Id != answerId).ToList())
             {
                 movie.Selectable = false;
             }
@@ -156,7 +156,11 @@ else
                 }
             }
         }
-        
+
         StateHasChanged();
+    }
+
+    public int GetAnswerKeyId(){
+        return _answerKey.Id;
     }
 }

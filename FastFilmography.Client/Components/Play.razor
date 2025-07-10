@@ -173,7 +173,7 @@ else if (actorLoaded == true && displayMovies == true)
             gameResultMessage = "You weren't able to beat the clock this time. Try again?";
             gameOver = true;
         }
-        movieContainer.DisableMovie(isGameOver);
+        movieContainer.DisableMovie(isGameOver, movieContainer.GetAnswerKeyId());
     }
 
     private async Task ProcessMovieSelection(bool isSelectionCorrect)
