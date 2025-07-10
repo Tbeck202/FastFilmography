@@ -3,16 +3,14 @@
 @rendermode @(new InteractiveAutoRenderMode(prerender: false))
 @inject ITMDBApi Tmdbapi
 
-<section class="container text-center mt-2">
+<section class="container text-center mt-1">
     @if (gameOver)
     {
-        <h2 class="text-light">@gameResultMessage</h2>
-        <section class="container-fluid text-center justify-content-center mt-3">
-            <button class="btn btn-primary btn-lg" @onclick="ReloadActor">Play Again!</button>
+        <section class="container-fluid text-center justify-content-center mt-2">
+            <button class="btn btn-primary btn-lg" @onclick="ReloadActor">Play Again?</button>
         </section>
 
     }
-
     @if (configurationLoaded && enableLoadButton)
     {
         if (!actorLoaded && !reloadActor)
@@ -41,13 +39,13 @@ else if (actorLoaded == true && displayMovies == true)
 
 @if (actorLoaded)
 {
-    <section class="container text-center mt-2">
-        <div class="row p-3 align-items-center" style="width: 1300px;">
-            <div class="col" style="max-width: 200px;">
+    <section class="container game-container">
+        <div class="row px-3 align-items-center" style="width: 1300px;">
+            <div class="actor-col">
                 <ActorDisplay Actor="actor" Reload="@ReloadActor" />
                 @* <span class="h3">@selectionText</span> *@
             </div>
-            <div class="col" style="height: 389px;">
+            <div class="movie-col">
                 <MovieContainer 
                 @ref="movieContainer"
                 ProcessMovieSelection="ProcessMovieSelection"
@@ -60,6 +58,8 @@ else if (actorLoaded == true && displayMovies == true)
     </section>
 
 }
+
+
 @if (isLoading)
 {
     <h6 class="text-light display-6 my-3">Loading...</h6>
