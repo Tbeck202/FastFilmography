@@ -3,10 +3,10 @@
 @rendermode @(new InteractiveAutoRenderMode(prerender: false))
 @inject ITMDBApi Tmdbapi
 
-<section class="container text-center mt-1">
+<section class="container-md text-center mt-1">
     @if (gameOver)
     {
-        <section class="container-fluid text-center justify-content-center mt-2">
+        <section class="container-md text-center justify-content-center mt-2">
             <button class="btn btn-primary btn-lg" @onclick="ReloadActor">Play Again?</button>
         </section>
 
@@ -15,14 +15,14 @@
     {
         if (!actorLoaded && !reloadActor)
         {
-            <section class="container-fluid text-center justify-content-center mt-3">
+            <section class="container-md text-center justify-content-center mt-3">
                 <button class="btn btn-primary btn-lg" @onclick="LoadActor">Load Actor</button>
             </section>
         }
     }
     else
     {
-        <section class="container-fluid text-center justify-content-center mt-3">
+        <section class="container-md text-center justify-content-center mt-3">
             <button class="btn btn-primary btn-lg" @onclick="LoadActor" disabled>Load Actor</button>
         </section>
     }
@@ -39,7 +39,7 @@ else if (actorLoaded == true && displayMovies == true)
 
 @if (actorLoaded)
 {
-    <section class="container game-container">
+    <section class="container-md game-container">
         <div class="row px-3 align-items-center" style="width: 1300px;">
             <div class="actor-col">
                 <ActorDisplay Actor="actor" Reload="@ReloadActor" />
