@@ -3,17 +3,49 @@
 
 @if (_movies.Count == 0)
 {
-    <div class="movie-container bg-secondary rounded" style="max-height: 400px;">
+    <div class="movie-container rounded" style="max-height: 400px;">
         <div class="row">
             @for(int i = 0; i < 6; i++)
             {
-                <div class="card" style="width: 10rem; margin: 5px;">
+                @* <div class="card" style="width: 10rem; margin: 5px;">
                     <img src="https://placehold.co/300x450" class="card-img-top" alt="...">
                     <div class="card-body">
                         <h5 class="card-title placeholder-glow"><span class="placeholder col-10"></span></h5>
                         <button href="#" class="btn btn-primary" disabled>
                             <span role="status">Loading...</span>
                         </button>
+                    </div>
+                </div> *@
+                <div class="card d-flex flex-column large-screens" style="width: 10rem; margin: 5px;">
+                    <img src="https://placehold.co/300x450" class="card-img-top" alt="Loading ...">
+
+                    <!-- Card body as flex container with column layout -->
+                    <div class="card-body d-flex flex-column">
+
+                        <!-- Title -->
+                        <h5 class="card-title small placeholder-glow"><span class="placeholder col-10"></span></h5>
+
+                        <!-- Spacer div pushes the button down -->
+                        <div class="row mt-auto">
+                            <button class="btn btn-primary w-100" disabled>
+                                <span role="status">Loading...</span>
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="card mb-1 small-screens" style="max-width: 250px; max-height: 100px;">
+                    <div class="row g-0">
+                        <div class="col-3">
+                            <img src="https://placehold.co/300x450" class="img-fluid rounded-start" style="max-height: 100px;" alt="Loading ...">
+                        </div>
+                        <div class="col-9 justify-content-start">
+                            <div class="card-body d-flex flex-column h-100 justify-content-between">
+                                <h5 class="card-title small placeholder-glow"><span class="placeholder col-10"></span></h5>
+                                <button disabled class="btn btn-primary btn-sm w-75"><span role="status">Loading...</span></button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             }
@@ -30,7 +62,7 @@ else
             }
         </div>
     </div>
-    <h6 class="text-light display-6 my-3">@SelectionText</h6>
+    @* <h6 class="text-light display-6 my-3">@SelectionText</h6> *@
 }
 
 
@@ -42,8 +74,8 @@ else
     [Parameter]
     public bool DisplayMovies { get; set; }
 
-    [Parameter] 
-    public string? SelectionText { get; set; }
+    // [Parameter] 
+    // public string? SelectionText { get; set; }
 
     [Parameter]
     public EventCallback<bool> ProcessMovieSelection { get; set; }
