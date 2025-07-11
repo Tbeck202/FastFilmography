@@ -46,4 +46,10 @@
         await Reload.InvokeAsync(); // Invoke the callback to reload the actor
         StateHasChanged(); // Refresh the component
     }
+
+    public void GameOver()
+    {
+        Actor.ReloadEnabled = true;
+        buttonText = "Try again";
+    }
 }

@@ -75,6 +75,12 @@ html, body {
     .movie-container {
     }
 
+    /*.movie-container-row {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center !important
+    }*/
+
     .truncate-text {
         white-space: nowrap;
         overflow: hidden;
