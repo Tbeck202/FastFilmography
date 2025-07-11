@@ -3,27 +3,20 @@
 @rendermode @(new InteractiveAutoRenderMode(prerender: false))
 @inject ITMDBApi Tmdbapi
 
-<section class="container text-center mt-1">
-    @if (gameOver)
-    {
-        <section class="container-fluid text-center justify-content-center mt-2">
-            <button class="btn btn-primary btn-lg" @onclick="ReloadActor">Play Again?</button>
-        </section>
-
-    }
+<section class="container-md text-center mt-1">
     @if (configurationLoaded && enableLoadButton)
     {
         if (!actorLoaded && !reloadActor)
         {
-            <section class="container-fluid text-center justify-content-center mt-3">
-                <button class="btn btn-primary btn-lg" @onclick="LoadActor">Load Actor</button>
+            <section class="container-md text-center justify-content-center mt-3">
+                <button class="btn btn-primary" @onclick="LoadActor">Load Actor</button>
             </section>
         }
     }
     else
     {
-        <section class="container-fluid text-center justify-content-center mt-3">
-            <button class="btn btn-primary btn-lg" @onclick="LoadActor" disabled>Load Actor</button>
+        <section class="container-md text-center justify-content-center mt-3">
+            <button class="btn btn-primary" @onclick="LoadActor" disabled>Load Actor</button>
         </section>
     }
 </section>
@@ -39,20 +32,19 @@ else if (actorLoaded == true && displayMovies == true)
 
 @if (actorLoaded)
 {
-    <section class="container game-container">
+    <section class="container-sm game-container">
+        <p class="text-light text-center">@selectionText</p>
+        <p class="text-light text-center">@gameResultMessage</p>
         <div class="row px-3 align-items-center" style="width: 1300px;">
             <div class="actor-col">
-                <ActorDisplay Actor="actor" Reload="@ReloadActor" />
-                @* <span class="h3">@selectionText</span> *@
+                <ActorDisplay @ref="actorDisplay" Actor="actor" Reload="@ReloadActor" />
             </div>
             <div class="movie-col">
                 <MovieContainer 
                 @ref="movieContainer"
                 ProcessMovieSelection="ProcessMovieSelection"
                 DisplayMovies="@displayMovies" 
-                Actor="actor"
-                SelectionText="@selectionText"/>
-
+                Actor="actor"/>
             </div>
         </div>
     </section>
@@ -87,6 +79,7 @@ else if (actorLoaded == true && displayMovies == true)
     private List<PopularActor> poplarActorsUsed = new List<PopularActor>();
     private GameTimer pregameTimer;
     private GameTimer inGameTimer;
+    private ActorDisplay actorDisplay;
     private MovieContainer movieContainer;
 
     protected override async Task OnInitializedAsync()
@@ -129,6 +122,7 @@ else if (actorLoaded == true && displayMovies == true)
         displayMovies = false;
         gameOver = false;
         selectionText = string.Empty;
+        gameResultMessage = string.Empty;
         selectionGuesses = 0;
         actor = new Actor();
 
@@ -171,7 +165,9 @@ else if (actorLoaded == true && displayMovies == true)
         if (isGameOver){
 
             gameResultMessage = "You weren't able to beat the clock this time. Try again?";
+            selectionText = string.Empty;
             gameOver = true;
+            actorDisplay.GameOver();
         }
         movieContainer.DisableMovie(isGameOver, movieContainer.GetAnswerKeyId());
     }
@@ -184,11 +180,13 @@ else if (actorLoaded == true && displayMovies == true)
         selectionText = isSelectionCorrect ? "Correct!" : "Try Again!";
         if(isSelectionCorrect)
         {
+            selectionText = string.Empty;
             gameResultMessage = selectionGuesses == 1 ? 
             $"Nice work! You figured it out in {selectionGuesses} try!" :
             $"Nice work! You figured it out in {selectionGuesses} tries!";
             inGameTimer.StopTimer();
             gameOver = true;
+            actorDisplay.GameOver();
         }
     }
 }

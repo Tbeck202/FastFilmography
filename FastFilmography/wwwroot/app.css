@@ -2,7 +2,7 @@ html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
-@media (width > 576px) {
+@media (width > 768px) {
     .small-screens {
         display: none !important;
     }
@@ -47,21 +47,21 @@ html, body {
         margin-left: calc(var(--bs-gutter-x) * -.5);
         justify-content: center !important
     }
-    
 }
 
-@media (max-width: 576px) {
+@media (max-width: 768px) {
     .large-screens {
         display: none !important;
     }
 
     .game-container {
         margin-top: .5rem !important;
+        padding: 0px;
     }
 
     .actor-col {
         flex: 0 0 auto;
-        width: 33.33333333%; 
+        width: 33.33333333%;
         max-width: 150px;
     }
 
@@ -73,8 +73,13 @@ html, body {
     }
 
     .movie-container {
-        
     }
+
+    /*.movie-container-row {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center !important
+    }*/
 
     .truncate-text {
         white-space: nowrap;
